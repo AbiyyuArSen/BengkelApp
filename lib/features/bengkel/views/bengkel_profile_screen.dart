@@ -121,11 +121,8 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
         if (permission == LocationPermission.denied) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Izin lokasi ditolak. Aktifkan di pengaturan.'),
-                backgroundColor: Colors.red,
-              ),
-            );
+  SnackBar(content: Text('Izin lokasi ditolak. Aktifkan di pengaturan.'), backgroundColor: Colors.red),
+);
           }
           return;
         }
@@ -134,11 +131,8 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
       if (permission == LocationPermission.deniedForever) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Izin lokasi diblokir permanen. Aktifkan di pengaturan perangkat.'),
-              backgroundColor: Colors.red,
-            ),
-          );
+  SnackBar(content: Text('Izin lokasi diblokir permanen. Aktifkan di pengaturan perangkat.'), backgroundColor: Colors.red),
+);
         }
         return;
       }
@@ -161,22 +155,15 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Lokasi terdeteksi: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}',
-            ),
-            backgroundColor: const Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Lokasi terdeteksi: ${position.latitude.toStringAsFixed(6)}, ${position.longitude.toStringAsFixed(6)}',
+            ), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mendeteksi lokasi: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  SnackBar(content: Text('Gagal mendeteksi lokasi: $e'), backgroundColor: Colors.red),
+);
       }
     } finally {
       if (mounted) setState(() => _isDetectingLocation = false);
@@ -186,11 +173,8 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
   Future<void> _saveLocation() async {
     if (_selectedLocation == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pilih lokasi terlebih dahulu dengan mendeteksi GPS atau tap di peta.'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+  SnackBar(content: Text('Pilih lokasi terlebih dahulu dengan mendeteksi GPS atau tap di peta.'), backgroundColor: Colors.blue),
+);
       return;
     }
 
@@ -201,20 +185,14 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
       await vm.updateLocation(_selectedLocation!.latitude, _selectedLocation!.longitude, userId: userId);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Lokasi bengkel berhasil disimpan!'),
-            backgroundColor: Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Lokasi bengkel berhasil disimpan!'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal menyimpan lokasi: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  SnackBar(content: Text('Gagal menyimpan lokasi: $e'), backgroundColor: Colors.red),
+);
       }
     } finally {
       if (mounted) setState(() => _isSavingLocation = false);
@@ -228,11 +206,8 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
         _descCtrl.text.trim().isEmpty ||
         operatingHours.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Semua field wajib diisi dan minimal pilih 1 hari operasional.'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+  SnackBar(content: Text('Semua field wajib diisi dan minimal pilih 1 hari operasional.'), backgroundColor: Colors.blue),
+);
       return;
     }
 
@@ -248,17 +223,14 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
       if (mounted) {
         setState(() => _isEditingProfile = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profil bengkel berhasil diperbarui!'),
-            backgroundColor: Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Profil bengkel berhasil diperbarui!'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menyimpan: $e'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Gagal menyimpan: $e'), backgroundColor: Colors.red),
+);
       }
     } finally {
       if (mounted) setState(() => _isSavingProfile = false);

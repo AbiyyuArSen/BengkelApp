@@ -133,51 +133,6 @@ class _BengkelOrdersScreenState extends State<BengkelOrdersScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E2843),
-        elevation: 0,
-        titleSpacing: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Container(
-            width: 38, height: 38,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFF2B300), Color(0xFFFF8C00)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                dashboardVM.bengkelName.isNotEmpty
-                    ? dashboardVM.bengkelName[0].toUpperCase()
-                    : 'B',
-                style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-        ),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Text(
-            dashboardVM.bengkelName.isNotEmpty ? dashboardVM.bengkelName : 'Bengkel Saya',
-            style: const TextStyle(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: Colors.white70),
-            onPressed: _refreshOrders,
-          ),
-        ],
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -273,18 +228,23 @@ class _BengkelOrdersScreenState extends State<BengkelOrdersScreen> {
                       ],
                     ),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: filteredOrders.length,
-                    itemBuilder: (context, index) {
-                      final order = filteredOrders[index];
-                      final vehicle = ordersVM.getCustomerVehicle(order.userId);
-                      return _buildOrderCard(
-                        order,
-                        vehicle,
-                        dashboardVM.bengkelId,
-                      );
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      _refreshOrders();
                     },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: filteredOrders.length,
+                      itemBuilder: (context, index) {
+                        final order = filteredOrders[index];
+                        final vehicle = ordersVM.getCustomerVehicle(order.userId);
+                        return _buildOrderCard(
+                          order,
+                          vehicle,
+                          dashboardVM.bengkelId,
+                        );
+                      },
+                    ),
                   ),
           ),
         ],
@@ -829,21 +789,15 @@ class _BengkelOrdersScreenState extends State<BengkelOrdersScreen> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Pesanan berhasil diselesaikan dengan bukti kirim!'),
-            backgroundColor: Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Pesanan berhasil diselesaikan dengan bukti kirim!'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal menyelesaikan pesanan: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  SnackBar(content: Text('Gagal menyelesaikan pesanan: $e'), backgroundColor: Colors.red),
+);
       }
     }
   }
@@ -868,25 +822,16 @@ class _BengkelOrdersScreenState extends State<BengkelOrdersScreen> {
       if (mounted) {
         Navigator.pop(context); // close loader
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Pesanan berhasil diperbarui ke status: ${_getStatusLabel(status)}',
-            ),
-            backgroundColor: status == 'Batal'
-                ? Colors.red
-                : const Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Pesanan berhasil diperbarui ke status: ${_getStatusLabel(status)}',
+            ), backgroundColor: Colors.red),
+);
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context); // close loader
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal memperbarui status: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  SnackBar(content: Text('Gagal memperbarui status: $e'), backgroundColor: Colors.red),
+);
       }
     }
   }

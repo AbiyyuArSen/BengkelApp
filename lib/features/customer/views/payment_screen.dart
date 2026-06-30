@@ -404,33 +404,19 @@ class _PaymentScreenState extends State<PaymentScreen> {
           await viewModel.verifyAndUpdateOrderPayment(orderId);
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'),
-              backgroundColor: Color(0xFF00C853),
-              duration: Duration(seconds: 4),
-            ),
-          );
+  SnackBar(content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'), backgroundColor: Colors.blue),
+);
         } else if (paymentResult == MidtransPaymentResult.pending) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                '⏳ Pembayaran sedang diproses. Cek status di menu Pesanan.',
-              ),
-              backgroundColor: Color(0xFF1B3A5E),
-              duration: Duration(seconds: 4),
-            ),
-          );
+  SnackBar(content: Text('⏳ Pembayaran sedang diproses. Cek status di menu Pesanan.',
+              ), backgroundColor: Colors.blue),
+);
         } else {
           // Cancelled / failed — tetap simpan order sbg unpaid
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Order tersimpan. Selesaikan pembayaran lewat menu Pesanan.',
-              ),
-              backgroundColor: Color(0xFF1B3A5E),
-              duration: Duration(seconds: 4),
-            ),
-          );
+  SnackBar(content: Text('Order tersimpan. Selesaikan pembayaran lewat menu Pesanan.',
+              ), backgroundColor: Colors.blue),
+);
         }
 
         // Redirect ke halaman Order History (tab 2)
@@ -1622,21 +1608,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   });
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Alamat berhasil diperbarui!'),
-                                      backgroundColor: Color(0xFF00C853),
-                                    ),
-                                  );
+  SnackBar(content: Text('Alamat berhasil diperbarui!'), backgroundColor: Colors.blue),
+);
                                 }
                               } catch (e) {
                                 if (ctx.mounted) {
                                   Navigator.pop(ctx); // Pop progress dialog
                                   ScaffoldMessenger.of(ctx).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Gagal menyimpan alamat: $e'),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
+  SnackBar(content: Text('Gagal menyimpan alamat: $e'), backgroundColor: Colors.red),
+);
                                 }
                               }
                             }

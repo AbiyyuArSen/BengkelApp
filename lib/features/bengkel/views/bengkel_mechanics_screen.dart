@@ -126,6 +126,7 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
   PreferredSizeWidget _buildAppBar(BuildContext context, String bengkelName, bool isVerified) {
     final nameInitial = bengkelName.isNotEmpty ? bengkelName[0].toUpperCase() : 'B';
     return AppBar(
+      toolbarHeight: 72,
       backgroundColor: const Color(0xFF1E2843),
       elevation: 0,
       titleSpacing: 0,
@@ -393,8 +394,8 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
     if (phone.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nomor telepon mekanik tidak tersedia')),
-        );
+  SnackBar(content: Text('Nomor telepon mekanik tidak tersedia'), backgroundColor: Colors.blue),
+);
       }
       return;
     }
@@ -412,8 +413,8 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tidak dapat membuka WhatsApp')),
-        );
+  SnackBar(content: Text('Tidak dapat membuka WhatsApp'), backgroundColor: Colors.blue),
+);
       }
     }
   }

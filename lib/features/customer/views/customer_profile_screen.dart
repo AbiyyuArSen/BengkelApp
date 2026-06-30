@@ -283,42 +283,15 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                               .read<CustomerProfileViewModel>()
                                               .deleteVehicle(vehicle.id);
                                           if (context.mounted) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: const Text(
-                                                  'Kendaraan berhasil dihapus',
-                                                ),
-                                                backgroundColor:
-                                                    Colors.green.shade600,
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                              ),
-                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Kendaraan berhasil dihapus'), backgroundColor: Colors.green),
+);
                                           }
                                         } catch (e) {
                                           if (context.mounted) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Gagal menghapus: $e',
-                                                ),
-                                                backgroundColor: Colors.red,
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                              ),
-                                            );
+                                            ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
+);
                                           }
                                         }
                                       }
@@ -454,12 +427,9 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                                 } catch (e) {
                                   if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Gagal membuka WhatsApp. Hubungi support@bengkelku.com',
-                                        ),
-                                      ),
-                                    );
+  SnackBar(content: Text('Gagal membuka WhatsApp. Hubungi support@bengkelku.com',
+                                        ), backgroundColor: Colors.blue),
+);
                                   }
                                 }
                               },

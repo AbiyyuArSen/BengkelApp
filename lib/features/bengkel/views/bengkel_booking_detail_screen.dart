@@ -50,13 +50,13 @@ class _BengkelBookingDetailScreenState extends State<BengkelBookingDetailScreen>
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Pesanan diterima. Menunggu pembayaran awal customer.')),
-        );
+  SnackBar(content: Text('Pesanan diterima. Menunggu pembayaran awal customer.'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
     }
   }
 
@@ -64,8 +64,8 @@ class _BengkelBookingDetailScreenState extends State<BengkelBookingDetailScreen>
     try {
       if (_selectedMechanicId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Pilih mekanik terlebih dahulu')),
-        );
+  SnackBar(content: Text('Pilih mekanik terlebih dahulu'), backgroundColor: Colors.blue),
+);
         return;
       }
       
@@ -76,13 +76,13 @@ class _BengkelBookingDetailScreenState extends State<BengkelBookingDetailScreen>
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Mekanik berhasil ditugaskan & dikirim!')),
-        );
+  SnackBar(content: Text('Mekanik berhasil ditugaskan & dikirim!'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
     }
   }
 
@@ -95,13 +95,13 @@ class _BengkelBookingDetailScreenState extends State<BengkelBookingDetailScreen>
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Booking berhasil dibatalkan.')),
-        );
+  SnackBar(content: Text('Booking berhasil dibatalkan.'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
     }
   }
 

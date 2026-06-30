@@ -258,7 +258,7 @@ class CustomerDashboardViewModel extends ChangeNotifier {
       // Combine them
       final allRatings = [...serviceRatings, ...orderRatings];
 
-      double rating = 4.5;
+      double rating = 0.0;
       int reviewsCount = 0;
       if (allRatings.isNotEmpty) {
         final sum = allRatings.reduce((a, b) => a + b);

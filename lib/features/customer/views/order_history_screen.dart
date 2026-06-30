@@ -609,11 +609,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     final url = order.paymentUrl;
     if (url == null || url.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('URL pembayaran tidak tersedia.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+  SnackBar(content: Text('URL pembayaran tidak tersedia.'), backgroundColor: Colors.red),
+);
       return;
     }
 
@@ -654,20 +651,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     if (!mounted) return;
     if (paymentResult == MidtransPaymentResult.success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'),
-          backgroundColor: Color(0xFF00C853),
-          duration: Duration(seconds: 4),
-        ),
-      );
+  SnackBar(content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'), backgroundColor: Colors.blue),
+);
     } else if (paymentResult == MidtransPaymentResult.pending) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('⏳ Pembayaran sedang diproses. Cek status kembali nanti.'),
-          backgroundColor: Color(0xFF1B3A5E),
-          duration: Duration(seconds: 4),
-        ),
-      );
+  SnackBar(content: Text('⏳ Pembayaran sedang diproses. Cek status kembali nanti.'), backgroundColor: Colors.blue),
+);
     }
   }
 
@@ -689,21 +678,17 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       await viewModel.fetchOrderHistory();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            paid
+  SnackBar(content: Text(paid
                 ? 'Pembayaran terkonfirmasi! Pesanan Anda sekarang aktif.'
                 : 'Pembayaran belum terdeteksi. Silakan selesaikan pembayaran terlebih dahulu.',
-          ),
-          backgroundColor: paid ? const Color(0xFF00C853) : Colors.orange,
-        ),
-      );
+          ), backgroundColor: Colors.blue),
+);
     } catch (e) {
       if (mounted) Navigator.pop(context);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal memverifikasi pembayaran: $e')),
-      );
+  SnackBar(content: Text('Gagal memverifikasi pembayaran: $e'), backgroundColor: Colors.blue),
+);
     }
   }
 
@@ -717,8 +702,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menghapus pesanan: $e')),
-      );
+  SnackBar(content: Text('Gagal menghapus pesanan: $e'), backgroundColor: Colors.blue),
+);
     }
   }
 
@@ -1148,8 +1133,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                                           } catch (_) {
                                             if (context.mounted) {
                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Tidak dapat membuka tautan peta')),
-                                              );
+  SnackBar(content: Text('Tidak dapat membuka tautan peta'), backgroundColor: Colors.blue),
+);
                                             }
                                           }
                                         }
@@ -1336,21 +1321,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       if (mounted) {
         Navigator.pop(context); // close loader
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Terima kasih! Ulasan Anda telah terkirim.'),
-            backgroundColor: Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Terima kasih! Ulasan Anda telah terkirim.'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
         Navigator.pop(context); // close loader
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mengirim ulasan: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  SnackBar(content: Text('Gagal mengirim ulasan: $e'), backgroundColor: Colors.red),
+);
       }
     }
   }

@@ -141,8 +141,8 @@ class _RegisterCustomerScreenState extends State<RegisterCustomerScreen> {
                         );
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
-                        );
+  SnackBar(content: Text('Registrasi berhasil! Silakan login.'), backgroundColor: Colors.blue),
+);
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -151,8 +151,8 @@ class _RegisterCustomerScreenState extends State<RegisterCustomerScreen> {
                       } catch (e) {
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Registrasi gagal: ${e.toString()}')),
-                        );
+  SnackBar(content: Text('Registrasi gagal: ${e.toString()}'), backgroundColor: Colors.blue),
+);
                       }
                     },
                   ),

@@ -240,15 +240,15 @@ class _EditVehicleScreenState extends State<EditVehicleScreen> {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Kendaraan berhasil diperbarui!')),
-                          );
+  SnackBar(content: Text('Kendaraan berhasil diperbarui!'), backgroundColor: Colors.blue),
+);
                           Navigator.pop(context);
                         }
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Gagal memperbarui kendaraan: $e')),
-                          );
+  SnackBar(content: Text('Gagal memperbarui kendaraan: $e'), backgroundColor: Colors.blue),
+);
                         }
                       }
                     }

@@ -30,11 +30,15 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
     final price = int.tryParse(priceStr) ?? 0;
 
     if (report.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Laporan pekerjaan tidak boleh kosong')));
+      ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Laporan pekerjaan tidak boleh kosong'), backgroundColor: Colors.blue),
+);
       return;
     }
     if (price <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Total tagihan tidak valid')));
+      ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Total tagihan tidak valid'), backgroundColor: Colors.blue),
+);
       return;
     }
 
@@ -51,11 +55,15 @@ class _ServiceReportScreenState extends State<ServiceReportScreen> {
       
       if (mounted) {
         Navigator.pop(context, true); // true = success
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pekerjaan selesai, tagihan dikirim!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Pekerjaan selesai, tagihan dikirim!'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

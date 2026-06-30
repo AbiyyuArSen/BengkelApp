@@ -761,7 +761,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                                   const Icon(Icons.star, color: Colors.amber, size: 12),
                                                   const SizedBox(width: 2),
                                                   Text(
-                                                    '${b['rating'] ?? 4.5}',
+                                                    '${b['rating'] ?? 0.0}',
                                                     style: const TextStyle(
                                                       fontSize: 11,
                                                       fontWeight: FontWeight.bold,
@@ -887,7 +887,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                 child: _buildWorkshopCard(
                                   imageUrl: b['image_url'] as String? ?? '',
                                   name: b['name'] as String? ?? 'Bengkel',
-                                  rating: (b['rating'] as num?)?.toDouble() ?? 4.5,
+                                  rating: (b['rating'] as num?)?.toDouble() ?? 0.0,
                                   reviewsCount: (b['reviews_count'] as num?)?.toInt() ?? 0,
                                   distance: (b['distance_km'] ?? b['distance'] as num?)?.toDouble() ?? 0.0,
                                   address: b['address'] as String? ?? '-',

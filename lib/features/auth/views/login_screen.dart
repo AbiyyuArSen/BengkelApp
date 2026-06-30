@@ -219,8 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Login berhasil!')),
-                              );
+  SnackBar(content: Text('Login berhasil!'), backgroundColor: Colors.blue),
+);
                               final role = authViewModel.currentUser?.role;
                               if (role == UserRole.admin) {
                                 Navigator.pushReplacement(
@@ -258,10 +258,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             } catch (e) {
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Login gagal: ${e.toString()}'),
-                                ),
-                              );
+  SnackBar(content: Text('Login gagal: ${e.toString()}'), backgroundColor: Colors.blue),
+);
                             }
                           },
                         ),
@@ -300,10 +298,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             } catch (e) {
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Login Google gagal: ${e.toString()}'),
-                                ),
-                              );
+  SnackBar(content: Text('Login Google gagal: ${e.toString()}'), backgroundColor: Colors.blue),
+);
                             }
                           },
                         ),

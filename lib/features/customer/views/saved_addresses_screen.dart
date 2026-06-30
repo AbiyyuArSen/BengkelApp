@@ -221,15 +221,15 @@ class _SavedAddressesScreenState extends State<SavedAddressesScreen> {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Alamat berhasil disimpan!')),
-                          );
+  SnackBar(content: Text('Alamat berhasil disimpan!'), backgroundColor: Colors.blue),
+);
                           Navigator.pop(context);
                         }
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Gagal menyimpan alamat: $e')),
-                          );
+  SnackBar(content: Text('Gagal menyimpan alamat: $e'), backgroundColor: Colors.blue),
+);
                         }
                       }
                     }

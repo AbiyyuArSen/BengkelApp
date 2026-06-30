@@ -30,7 +30,7 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final dashboardVM = Provider.of<BengkelDashboardViewModel>(context);
-    
+
     // Fetch orders if we have a bengkelId and haven't fetched for it yet
     if (dashboardVM.bengkelId.isNotEmpty &&
         dashboardVM.bengkelId != _lastFetchedBengkelId) {
@@ -38,42 +38,58 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           context.read<BengkelOrdersViewModel>().fetchBengkelOrders(
-                dashboardVM.bengkelId,
-              );
+            dashboardVM.bengkelId,
+          );
           context.read<BengkelBookingViewModel>().fetchBookings();
           context.read<BengkelDashboardViewModel>().fetchBengkelReviews();
         }
       });
     }
 
-    return Consumer3<AuthViewModel, BengkelDashboardViewModel, BengkelOrdersViewModel>(
-      builder: (context, authViewModel, bengkelViewModel, ordersViewModel, child) {
-        final isVerified = bengkelViewModel.status == 'diterima' || bengkelViewModel.status == 'active';
-        final isProfileComplete = bengkelViewModel.isProfileComplete;
-        final hasDocument = bengkelViewModel.documentUrl != null;
-        final bengkelName = bengkelViewModel.bengkelName.isNotEmpty ? bengkelViewModel.bengkelName : 'Bengkel Saya';
+    return Consumer3<
+      AuthViewModel,
+      BengkelDashboardViewModel,
+      BengkelOrdersViewModel
+    >(
+      builder:
+          (context, authViewModel, bengkelViewModel, ordersViewModel, child) {
+            final isVerified =
+                bengkelViewModel.status == 'diterima' ||
+                bengkelViewModel.status == 'active';
+            final isProfileComplete = bengkelViewModel.isProfileComplete;
+            final hasDocument = bengkelViewModel.documentUrl != null;
+            final bengkelName = bengkelViewModel.bengkelName.isNotEmpty
+                ? bengkelViewModel.bengkelName
+                : 'Bengkel Saya';
 
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: _buildAppBar(context, bengkelName, isVerified),
-          body: isVerified
-              ? _buildVerifiedDashboard(bengkelViewModel, ordersViewModel)
-              : _buildUnverifiedDashboard(
-                  context,
-                  bengkelViewModel.status,
-                  isProfileComplete,
-                  hasDocument,
-                  bengkelViewModel.rejectionReason,
-                  bengkelViewModel,
-                ),
-        );
-      },
+            return Scaffold(
+              backgroundColor: AppColors.background,
+              appBar: _buildAppBar(context, bengkelName, isVerified),
+              body: isVerified
+                  ? _buildVerifiedDashboard(bengkelViewModel, ordersViewModel)
+                  : _buildUnverifiedDashboard(
+                      context,
+                      bengkelViewModel.status,
+                      isProfileComplete,
+                      hasDocument,
+                      bengkelViewModel.rejectionReason,
+                      bengkelViewModel,
+                    ),
+            );
+          },
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, String bengkelName, bool isVerified) {
-    final nameInitial = bengkelName.isNotEmpty ? bengkelName[0].toUpperCase() : 'B';
+  PreferredSizeWidget _buildAppBar(
+    BuildContext context,
+    String bengkelName,
+    bool isVerified,
+  ) {
+    final nameInitial = bengkelName.isNotEmpty
+        ? bengkelName[0].toUpperCase()
+        : 'B';
     return AppBar(
+      toolbarHeight: 72,
       backgroundColor: const Color(0xFF1E2843),
       elevation: 0,
       titleSpacing: 0,
@@ -150,7 +166,11 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                 color: Colors.white.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.logout_rounded, color: Colors.white70, size: 18),
+              child: const Icon(
+                Icons.logout_rounded,
+                color: Colors.white70,
+                size: 18,
+              ),
             ),
             onPressed: () async {
               await context.read<AuthViewModel>().signOut();
@@ -167,7 +187,6 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
       ],
     );
   }
-
 
   Widget _buildUnverifiedDashboard(
     BuildContext context,
@@ -194,31 +213,36 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
       bannerBorderColor = Colors.red.shade300;
       bannerIcon = Icons.block_flipped;
       bannerTitle = 'Akun Ditangguhkan (Suspended)';
-      bannerDesc = 'Akun bengkel Anda telah ditangguhkan oleh admin karena terindikasi atau terbukti melakukan pelanggaran, kecurangan, atau penipuan.\n\nHarap hubungi customer support admin untuk melakukan banding atau klarifikasi lebih lanjut.';
+      bannerDesc =
+          'Akun bengkel Anda telah ditangguhkan oleh admin karena terindikasi atau terbukti melakukan pelanggaran, kecurangan, atau penipuan.\n\nHarap hubungi customer support admin untuk melakukan banding atau klarifikasi lebih lanjut.';
     } else if (isRejected) {
       bannerColor = Colors.red.shade50;
       bannerBorderColor = Colors.red.shade200;
       bannerIcon = Icons.error_outline_rounded;
       bannerTitle = 'Pendaftaran Ditolak';
-      bannerDesc = 'Pengajuan verifikasi mitra Anda ditolak oleh admin dengan alasan:\n\n"${rejectionReason ?? 'Tidak ada alasan khusus.'}"\n\nSilakan perbaiki profil atau upload ulang dokumen verifikasi yang sesuai.';
+      bannerDesc =
+          'Pengajuan verifikasi mitra Anda ditolak oleh admin dengan alasan:\n\n"${rejectionReason ?? 'Tidak ada alasan khusus.'}"\n\nSilakan perbaiki profil atau upload ulang dokumen verifikasi yang sesuai.';
     } else if (isWaitingReview) {
       bannerColor = Colors.blue.shade50;
       bannerBorderColor = Colors.blue.shade200;
       bannerIcon = Icons.hourglass_top_rounded;
       bannerTitle = 'Dokumen Sedang Ditinjau';
-      bannerDesc = 'Dokumen Anda sedang dalam proses peninjauan oleh admin. Harap tunggu pemberitahuan lebih lanjut.';
+      bannerDesc =
+          'Dokumen Anda sedang dalam proses peninjauan oleh admin. Harap tunggu pemberitahuan lebih lanjut.';
     } else if (isProfileComplete) {
       bannerColor = Colors.green.shade50;
       bannerBorderColor = Colors.green.shade200;
       bannerIcon = Icons.upload_file_rounded;
       bannerTitle = 'Profil Lengkap!';
-      bannerDesc = 'Profil bengkel Anda sudah lengkap. Silakan upload dokumen verifikasi untuk melanjutkan.';
+      bannerDesc =
+          'Profil bengkel Anda sudah lengkap. Silakan upload dokumen verifikasi untuk melanjutkan.';
     } else {
       bannerColor = Colors.orange.shade50;
       bannerBorderColor = Colors.orange.shade200;
       bannerIcon = Icons.pending_actions;
       bannerTitle = 'Akun Bengkel Belum Terverifikasi';
-      bannerDesc = 'Mohon selesaikan langkah-langkah berikut agar bengkel Anda dapat beroperasi dan menerima pesanan.';
+      bannerDesc =
+          'Mohon selesaikan langkah-langkah berikut agar bengkel Anda dapat beroperasi dan menerima pesanan.';
     }
 
     return SafeArea(
@@ -236,7 +260,13 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               ),
               child: Column(
                 children: [
-                  Icon(bannerIcon, size: 64, color: (isRejected || isSuspended) ? Colors.red.shade400 : bannerBorderColor),
+                  Icon(
+                    bannerIcon,
+                    size: 64,
+                    color: (isRejected || isSuspended)
+                        ? Colors.red.shade400
+                        : bannerBorderColor,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     bannerTitle,
@@ -251,7 +281,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                   Text(
                     bannerDesc,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -262,18 +295,28 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1B2E3C),
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: () async {
-                  final phone = '6281234567890'; // Predefined Admin support phone number
-                  final text = 'Halo Admin Bengkelin, akun bengkel saya "${viewModel.bengkelName}" ditangguhkan (ID: ${viewModel.bengkelId}). Mohon informasi alasan penangguhan dan langkah selanjutnya.';
-                  final url = Uri.parse('https://wa.me/$phone?text=${Uri.encodeComponent(text)}');
+                  final phone =
+                      '6281234567890'; // Predefined Admin support phone number
+                  final text =
+                      'Halo Admin Bengkelin, akun bengkel saya "${viewModel.bengkelName}" ditangguhkan (ID: ${viewModel.bengkelId}). Mohon informasi alasan penangguhan dan langkah selanjutnya.';
+                  final url = Uri.parse(
+                    'https://wa.me/$phone?text=${Uri.encodeComponent(text)}',
+                  );
                   try {
                     await launchUrl(url, mode: LaunchMode.externalApplication);
                   } catch (e) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Gagal membuka WhatsApp. Hubungi admin@bengkelin.com')),
+                        const SnackBar(
+                          content: Text(
+                            'Gagal membuka WhatsApp. Hubungi admin@bengkelin.com',
+                          ),
+                        ),
                       );
                     }
                   }
@@ -281,7 +324,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                 icon: const Icon(Icons.support_agent, color: Colors.white),
                 label: const Text(
                   'Hubungi Dukungan Admin',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ] else ...[
@@ -297,16 +343,20 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               _buildVerificationStep(
                 step: 1,
                 title: 'Lengkapi Profil Bengkel',
-                description: 'Nama bengkel, alamat, deskripsi, dan jam operasional.',
+                description:
+                    'Nama bengkel, alamat, deskripsi, dan jam operasional.',
                 isDone: isProfileComplete,
                 isActive: !isProfileComplete,
-                onTap: isProfileComplete ? null : () => _showProfileDialog(context),
+                onTap: isProfileComplete
+                    ? null
+                    : () => _showProfileDialog(context),
               ),
               const SizedBox(height: 12),
               _buildVerificationStep(
                 step: 2,
                 title: 'Upload Dokumen Verifikasi',
-                description: 'Gabungkan KTP Pemilik, SIUP/NIB, dan foto bengkel dalam 1 file PDF.',
+                description:
+                    'Gabungkan KTP Pemilik, SIUP/NIB, dan foto bengkel dalam 1 file PDF.',
                 isDone: isWaitingReview,
                 isActive: canUpload,
                 onTap: canUpload ? () => _showUploadDialog(context) : null,
@@ -318,8 +368,8 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                 description: isRejected
                     ? 'Ditolak: ${rejectionReason ?? ''}'
                     : isWaitingReview
-                        ? 'Dokumen Anda sedang ditinjau oleh admin BengkelKu.'
-                        : 'Menunggu peninjauan oleh admin BengkelKu.',
+                    ? 'Dokumen Anda sedang ditinjau oleh admin BengkelKu.'
+                    : 'Menunggu peninjauan oleh admin BengkelKu.',
                 isDone: false,
                 isActive: isWaitingReview || isRejected,
               ),
@@ -333,10 +383,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
   void _showProfileDialog(BuildContext context) {
     final viewModel = context.read<BengkelDashboardViewModel>();
     final authViewModel = context.read<AuthViewModel>();
-    final defaultName = viewModel.bengkelName.isNotEmpty 
-        ? viewModel.bengkelName 
+    final defaultName = viewModel.bengkelName.isNotEmpty
+        ? viewModel.bengkelName
         : (authViewModel.currentUser?.name ?? '');
-        
+
     final nameCtrl = TextEditingController(text: defaultName);
     final addressCtrl = TextEditingController(text: viewModel.bengkelAddress);
     final descCtrl = TextEditingController(text: viewModel.description);
@@ -344,7 +394,11 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
     bool hasAttemptedSubmit = false;
     bool isDetectingLocation = false;
 
-    LatLng? selectedLocation = (viewModel.latitude != 0.0 && viewModel.longitude != 0.0 && viewModel.latitude != null && viewModel.longitude != null)
+    LatLng? selectedLocation =
+        (viewModel.latitude != 0.0 &&
+            viewModel.longitude != 0.0 &&
+            viewModel.latitude != null &&
+            viewModel.longitude != null)
         ? LatLng(viewModel.latitude!, viewModel.longitude!)
         : null;
     final MapController mapController = MapController();
@@ -354,8 +408,12 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
         isDetectingLocation = true;
         onUpdate();
         final url = Uri.parse(
-            'https://nominatim.openstreetmap.org/reverse?format=json&lat=${latLng.latitude}&lon=${latLng.longitude}&zoom=18&addressdetails=1');
-        final response = await http.get(url, headers: {'User-Agent': 'BengkelinApp/1.0'});
+          'https://nominatim.openstreetmap.org/reverse?format=json&lat=${latLng.latitude}&lon=${latLng.longitude}&zoom=18&addressdetails=1',
+        );
+        final response = await http.get(
+          url,
+          headers: {'User-Agent': 'BengkelinApp/1.0'},
+        );
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           if (data['display_name'] != null) {
@@ -380,22 +438,28 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.denied) {
           permission = await Geolocator.requestPermission();
-          if (permission == LocationPermission.denied) throw Exception('Izin GPS ditolak');
+          if (permission == LocationPermission.denied)
+            throw Exception('Izin GPS ditolak');
         }
         if (permission == LocationPermission.deniedForever) {
           throw Exception('Izin GPS ditolak permanen');
         }
 
-        final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        final position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
         final newLocation = LatLng(position.latitude, position.longitude);
 
         selectedLocation = newLocation;
         mapController.move(newLocation, 16.0);
-        
+
         await reverseGeocode(newLocation, onUpdate);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal mendeteksi lokasi: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Gagal mendeteksi lokasi: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       } finally {
         isDetectingLocation = false;
@@ -404,7 +468,15 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
     }
 
     // State jam operasional
-    final List<String> allDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+    final List<String> allDays = [
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu',
+    ];
     final List<bool> selectedDays = List.filled(7, false);
     // Default: Senin-Jumat
     for (int i = 0; i < 5; i++) {
@@ -416,8 +488,15 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
     String formatTime(TimeOfDay t) =>
         '${t.hour.toString().padLeft(2, '0')}.${t.minute.toString().padLeft(2, '0')}';
 
-    String buildOperatingHours(List<bool> days, TimeOfDay open, TimeOfDay close) {
-      final activeDays = [for (int i = 0; i < days.length; i++) if (days[i]) allDays[i]];
+    String buildOperatingHours(
+      List<bool> days,
+      TimeOfDay open,
+      TimeOfDay close,
+    ) {
+      final activeDays = [
+        for (int i = 0; i < days.length; i++)
+          if (days[i]) allDays[i],
+      ];
       if (activeDays.isEmpty) return '';
       return '${activeDays.join(', ')}, ${formatTime(open)}-${formatTime(close)}';
     }
@@ -428,7 +507,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text('Lengkapi Profil Bengkel', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: const Text(
+              'Lengkapi Profil Bengkel',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             content: isSaving
                 ? const SizedBox(
                     height: 100,
@@ -446,7 +528,11 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                           },
                           decoration: InputDecoration(
                             labelText: 'Nama Bengkel *',
-                            errorText: hasAttemptedSubmit && nameCtrl.text.trim().isEmpty ? 'Nama Bengkel wajib diisi' : null,
+                            errorText:
+                                hasAttemptedSubmit &&
+                                    nameCtrl.text.trim().isEmpty
+                                ? 'Nama Bengkel wajib diisi'
+                                : null,
                             border: const OutlineInputBorder(),
                             prefixIcon: const Icon(Icons.storefront_outlined),
                           ),
@@ -460,26 +546,40 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                           },
                           decoration: InputDecoration(
                             labelText: 'Alamat Bengkel *',
-                            errorText: hasAttemptedSubmit && addressCtrl.text.trim().isEmpty ? 'Alamat Bengkel wajib diisi' : null,
+                            errorText:
+                                hasAttemptedSubmit &&
+                                    addressCtrl.text.trim().isEmpty
+                                ? 'Alamat Bengkel wajib diisi'
+                                : null,
                             border: const OutlineInputBorder(),
                             prefixIcon: const Icon(Icons.location_on_outlined),
                             suffixIcon: IconButton(
-                              icon: const Icon(Icons.map_outlined, color: AppColors.primary),
+                              icon: const Icon(
+                                Icons.map_outlined,
+                                color: AppColors.primary,
+                              ),
                               tooltip: 'Pilih lokasi dari peta',
-                                onPressed: () {
-                                  final initialLocation = selectedLocation;
-                                  final initialAddress = addressCtrl.text;
-                                  
-                                  showDialog(
-                                    context: context,
-                                    builder: (mapCtx) => StatefulBuilder(
-                                      builder: (mapCtx, setMapState) {
+                              onPressed: () {
+                                final initialLocation = selectedLocation;
+                                final initialAddress = addressCtrl.text;
+
+                                showDialog(
+                                  context: context,
+                                  builder: (mapCtx) => StatefulBuilder(
+                                    builder: (mapCtx, setMapState) {
                                       void updateStates() {
                                         setMapState(() {});
                                         setState(() {});
                                       }
+
                                       return AlertDialog(
-                                        title: const Text('Pilih Lokasi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                        title: const Text(
+                                          'Pilih Lokasi',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
                                         content: SizedBox(
                                           width: double.maxFinite,
                                           height: 400,
@@ -487,30 +587,55 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                             children: [
                                               Expanded(
                                                 child: ClipRRect(
-                                                  borderRadius: BorderRadius.circular(12),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
                                                   child: FlutterMap(
-                                                    mapController: mapController,
+                                                    mapController:
+                                                        mapController,
                                                     options: MapOptions(
-                                                      initialCenter: selectedLocation ?? LatLng(-6.2088, 106.8456),
-                                                      initialZoom: selectedLocation != null ? 15.0 : 12.0,
+                                                      initialCenter:
+                                                          selectedLocation ??
+                                                          LatLng(
+                                                            -6.2088,
+                                                            106.8456,
+                                                          ),
+                                                      initialZoom:
+                                                          selectedLocation !=
+                                                              null
+                                                          ? 15.0
+                                                          : 12.0,
                                                       onTap: (tapPos, latLng) {
-                                                        selectedLocation = latLng;
-                                                        reverseGeocode(latLng, updateStates);
+                                                        selectedLocation =
+                                                            latLng;
+                                                        reverseGeocode(
+                                                          latLng,
+                                                          updateStates,
+                                                        );
                                                       },
                                                     ),
                                                     children: [
                                                       TileLayer(
-                                                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                                        userAgentPackageName: 'com.bengkelin.app',
+                                                        urlTemplate:
+                                                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                                        userAgentPackageName:
+                                                            'com.bengkelin.app',
                                                       ),
-                                                      if (selectedLocation != null)
+                                                      if (selectedLocation !=
+                                                          null)
                                                         MarkerLayer(
                                                           markers: [
                                                             Marker(
-                                                              point: selectedLocation!,
+                                                              point:
+                                                                  selectedLocation!,
                                                               width: 40,
                                                               height: 40,
-                                                              child: const Icon(Icons.location_on, color: Colors.red, size: 40),
+                                                              child: const Icon(
+                                                                Icons
+                                                                    .location_on,
+                                                                color:
+                                                                    Colors.red,
+                                                                size: 40,
+                                                              ),
                                                             ),
                                                           ],
                                                         ),
@@ -521,22 +646,38 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                               const SizedBox(height: 12),
                                               Container(
                                                 width: double.infinity,
-                                                padding: const EdgeInsets.all(12),
+                                                padding: const EdgeInsets.all(
+                                                  12,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: AppColors.surface,
-                                                  border: Border.all(color: Colors.grey.shade300),
-                                                  borderRadius: BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
                                                 child: Row(
                                                   children: [
-                                                    const Icon(Icons.location_on, color: AppColors.primary, size: 20),
+                                                    const Icon(
+                                                      Icons.location_on,
+                                                      color: AppColors.primary,
+                                                      size: 20,
+                                                    ),
                                                     const SizedBox(width: 8),
                                                     Expanded(
                                                       child: Text(
-                                                        addressCtrl.text.isEmpty ? 'Pilih lokasi di peta' : addressCtrl.text,
-                                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                                                        addressCtrl.text.isEmpty
+                                                            ? 'Pilih lokasi di peta'
+                                                            : addressCtrl.text,
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
                                                         maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
                                                     ),
                                                   ],
@@ -546,11 +687,29 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                               SizedBox(
                                                 width: double.infinity,
                                                 child: OutlinedButton.icon(
-                                                  onPressed: isDetectingLocation ? null : () => detectLocation(updateStates),
+                                                  onPressed: isDetectingLocation
+                                                      ? null
+                                                      : () => detectLocation(
+                                                          updateStates,
+                                                        ),
                                                   icon: isDetectingLocation
-                                                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                                                      : const Icon(Icons.my_location, size: 18),
-                                                  label: Text(isDetectingLocation ? 'Mendeteksi...' : 'Gunakan GPS Saat Ini'),
+                                                      ? const SizedBox(
+                                                          width: 16,
+                                                          height: 16,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                                strokeWidth: 2,
+                                                              ),
+                                                        )
+                                                      : const Icon(
+                                                          Icons.my_location,
+                                                          size: 18,
+                                                        ),
+                                                  label: Text(
+                                                    isDetectingLocation
+                                                        ? 'Mendeteksi...'
+                                                        : 'Gunakan GPS Saat Ini',
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -559,21 +718,43 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                         actions: [
                                           TextButton(
                                             onPressed: () {
-                                              selectedLocation = initialLocation;
+                                              selectedLocation =
+                                                  initialLocation;
                                               addressCtrl.text = initialAddress;
                                               setState(() {});
                                               Navigator.pop(mapCtx);
                                             },
-                                            child: const Text('Batal', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                                            child: const Text(
+                                              'Batal',
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                           ElevatedButton(
-                                            onPressed: () => Navigator.pop(mapCtx),
+                                            onPressed: () =>
+                                                Navigator.pop(mapCtx),
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: AppColors.primary,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                              backgroundColor:
+                                                  AppColors.primary,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 10,
+                                                  ),
                                             ),
-                                            child: const Text('Simpan Lokasi', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                            child: const Text(
+                                              'Simpan Lokasi',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       );
@@ -594,7 +775,11 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                           decoration: InputDecoration(
                             labelText: 'Deskripsi Bengkel *',
                             hintText: 'Contoh: Bengkel spesialis AC mobil...',
-                            errorText: hasAttemptedSubmit && descCtrl.text.trim().isEmpty ? 'Deskripsi Bengkel wajib diisi' : null,
+                            errorText:
+                                hasAttemptedSubmit &&
+                                    descCtrl.text.trim().isEmpty
+                                ? 'Deskripsi Bengkel wajib diisi'
+                                : null,
                             border: const OutlineInputBorder(),
                             prefixIcon: const Icon(Icons.description_outlined),
                           ),
@@ -604,30 +789,55 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                           children: [
                             const Text(
                               'Jam Operasional *',
-                              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
                             ),
-                            if (hasAttemptedSubmit && buildOperatingHours(selectedDays, openTime, closeTime).isEmpty)
+                            if (hasAttemptedSubmit &&
+                                buildOperatingHours(
+                                  selectedDays,
+                                  openTime,
+                                  closeTime,
+                                ).isEmpty)
                               const Padding(
                                 padding: EdgeInsets.only(left: 8),
-                                child: Text('(Pilih minimal 1 hari)', style: TextStyle(color: Colors.red, fontSize: 12)),
+                                child: Text(
+                                  '(Pilih minimal 1 hari)',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                           ],
                         ),
                         const SizedBox(height: 8),
                         // Pilih Hari
-                        const Text('Hari buka:', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                        const Text(
+                          'Hari buka:',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                         const SizedBox(height: 4),
                         Wrap(
                           spacing: 4,
                           children: List.generate(7, (i) {
                             return FilterChip(
-                              label: Text(allDays[i].substring(0, 3),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: selectedDays[i] ? Colors.white : AppColors.textPrimary,
-                                  )),
+                              label: Text(
+                                allDays[i].substring(0, 3),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: selectedDays[i]
+                                      ? Colors.white
+                                      : AppColors.textPrimary,
+                                ),
+                              ),
                               selected: selectedDays[i],
-                              onSelected: (val) => setState(() => selectedDays[i] = val),
+                              onSelected: (val) =>
+                                  setState(() => selectedDays[i] = val),
                               selectedColor: AppColors.primary,
                               checkmarkColor: Colors.white,
                               backgroundColor: AppColors.surface,
@@ -647,24 +857,44 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                     initialTime: openTime,
                                     helpText: 'Jam Buka',
                                   );
-                                  if (picked != null) setState(() => openTime = picked);
+                                  if (picked != null)
+                                    setState(() => openTime = picked);
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 12,
+                                  ),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: AppColors.border),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.wb_sunny_outlined, size: 18, color: AppColors.textSecondary),
+                                      const Icon(
+                                        Icons.wb_sunny_outlined,
+                                        size: 18,
+                                        color: AppColors.textSecondary,
+                                      ),
                                       const SizedBox(width: 8),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          const Text('Buka', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
-                                          Text(formatTime(openTime),
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                          const Text(
+                                            'Buka',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                          Text(
+                                            formatTime(openTime),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -674,7 +904,13 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                             ),
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: Text('—', style: TextStyle(fontSize: 18, color: AppColors.textSecondary)),
+                              child: Text(
+                                '—',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
                             ),
                             Expanded(
                               child: InkWell(
@@ -684,24 +920,44 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                     initialTime: closeTime,
                                     helpText: 'Jam Tutup',
                                   );
-                                  if (picked != null) setState(() => closeTime = picked);
+                                  if (picked != null)
+                                    setState(() => closeTime = picked);
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 12,
+                                  ),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: AppColors.border),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(Icons.nightlight_outlined, size: 18, color: AppColors.textSecondary),
+                                      const Icon(
+                                        Icons.nightlight_outlined,
+                                        size: 18,
+                                        color: AppColors.textSecondary,
+                                      ),
                                       const SizedBox(width: 8),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          const Text('Tutup', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
-                                          Text(formatTime(closeTime),
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                          const Text(
+                                            'Tutup',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                          Text(
+                                            formatTime(closeTime),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -718,18 +974,35 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                           decoration: BoxDecoration(
                             color: AppColors.primary.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.2),
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.schedule, size: 16, color: AppColors.primary),
+                              const Icon(
+                                Icons.schedule,
+                                size: 16,
+                                color: AppColors.primary,
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  buildOperatingHours(selectedDays, openTime, closeTime).isEmpty
+                                  buildOperatingHours(
+                                        selectedDays,
+                                        openTime,
+                                        closeTime,
+                                      ).isEmpty
                                       ? 'Pilih hari terlebih dahulu'
-                                      : buildOperatingHours(selectedDays, openTime, closeTime),
-                                  style: const TextStyle(fontSize: 12, color: AppColors.primary),
+                                      : buildOperatingHours(
+                                          selectedDays,
+                                          openTime,
+                                          closeTime,
+                                        ),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.primary,
+                                  ),
                                 ),
                               ),
                             ],
@@ -742,14 +1015,23 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               if (!isSaving)
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
                 ),
               if (!isSaving)
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
                   onPressed: () async {
                     setState(() => hasAttemptedSubmit = true);
-                    final operatingHours = buildOperatingHours(selectedDays, openTime, closeTime);
+                    final operatingHours = buildOperatingHours(
+                      selectedDays,
+                      openTime,
+                      closeTime,
+                    );
                     if (nameCtrl.text.trim().isEmpty ||
                         addressCtrl.text.trim().isEmpty ||
                         descCtrl.text.trim().isEmpty ||
@@ -770,7 +1052,9 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                       if (context.mounted) {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Profil bengkel berhasil disimpan!')),
+                          const SnackBar(
+                            content: Text('Profil bengkel berhasil disimpan!'),
+                          ),
                         );
                       }
                     } catch (e) {
@@ -782,7 +1066,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                       }
                     }
                   },
-                  child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    'Simpan',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
             ],
           );
@@ -805,19 +1092,22 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
             content: isUploading
                 ? const SizedBox(
                     height: 100,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: Center(child: CircularProgressIndicator()),
                   )
                 : Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Silakan gabungkan dokumen berikut menjadi 1 file PDF:'),
+                      const Text(
+                        'Silakan gabungkan dokumen berikut menjadi 1 file PDF:',
+                      ),
                       const SizedBox(height: 8),
                       const Text(
                         '1. KTP Pemilik\n2. SKU / NIB\n3. Foto Bengkel Tampak Depan',
-                        style: TextStyle(color: AppColors.textSecondary, height: 1.5),
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          height: 1.5,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       _buildUploadItem(
@@ -840,14 +1130,21 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               if (!isUploading)
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+                  child: const Text(
+                    'Batal',
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
                 ),
               if (!isUploading)
                 ElevatedButton(
                   onPressed: () async {
                     if (selectedFile == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Silakan pilih file PDF terlebih dahulu')),
+                        const SnackBar(
+                          content: Text(
+                            'Silakan pilih file PDF terlebih dahulu',
+                          ),
+                        ),
                       );
                       return;
                     }
@@ -856,16 +1153,33 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                     final viewModel = context.read<BengkelDashboardViewModel>();
 
                     try {
-                      final userId = context.read<AuthViewModel>().currentUser?.id;
-                      await viewModel.uploadDocument('document', selectedFile!.bytes!, selectedFile!.name, userId: userId);
-                      
+                      final userId = context
+                          .read<AuthViewModel>()
+                          .currentUser
+                          ?.id;
+                      await viewModel.uploadDocument(
+                        'document',
+                        selectedFile!.bytes!,
+                        selectedFile!.name,
+                        userId: userId,
+                      );
+
                       if (context.mounted) {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Dokumen berhasil diupload, menunggu verifikasi Admin.')),
+                          const SnackBar(
+                            content: Text(
+                              'Dokumen berhasil diupload, menunggu verifikasi Admin.',
+                            ),
+                          ),
                         );
-                        final userId = context.read<AuthViewModel>().currentUser?.id;
-                        viewModel.fetchBengkelStatus(userId: userId); // Refresh status
+                        final userId = context
+                            .read<AuthViewModel>()
+                            .currentUser
+                            ?.id;
+                        viewModel.fetchBengkelStatus(
+                          userId: userId,
+                        ); // Refresh status
                       }
                     } catch (e) {
                       setState(() => isUploading = false);
@@ -876,8 +1190,13 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                       }
                     }
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                  child: const Text('Kirim Dokumen', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
+                  child: const Text(
+                    'Kirim Dokumen',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
             ],
           );
@@ -886,16 +1205,24 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
     );
   }
 
-  Widget _buildUploadItem({required String title, PlatformFile? file, required VoidCallback onTap}) {
+  Widget _buildUploadItem({
+    required String title,
+    PlatformFile? file,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          border: Border.all(color: file != null ? AppColors.primary : AppColors.border),
+          border: Border.all(
+            color: file != null ? AppColors.primary : AppColors.border,
+          ),
           borderRadius: BorderRadius.circular(8),
-          color: file != null ? AppColors.primary.withValues(alpha: 0.05) : Colors.transparent,
+          color: file != null
+              ? AppColors.primary.withValues(alpha: 0.05)
+              : Colors.transparent,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -904,11 +1231,17 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
                   if (file != null)
                     Text(
                       file.name,
-                      style: const TextStyle(fontSize: 12, color: AppColors.primary),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.primary,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -939,90 +1272,99 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDone ? Colors.green.shade50 : AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDone
-              ? Colors.green.shade200
-              : isActive
-                  ? AppColors.primary
-                  : AppColors.border,
+        decoration: BoxDecoration(
+          color: isDone ? Colors.green.shade50 : AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDone
+                ? Colors.green.shade200
+                : isActive
+                ? AppColors.primary
+                : AppColors.border,
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: isDone
-                  ? Colors.green
-                  : isActive
-                      ? AppColors.primary
-                      : AppColors.border,
-              shape: BoxShape.circle,
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isDone
+                    ? Colors.green
+                    : isActive
+                    ? AppColors.primary
+                    : AppColors.border,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: isDone
+                  ? const Icon(Icons.check, color: Colors.white, size: 16)
+                  : Text(
+                      '$step',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
-            alignment: Alignment.center,
-            child: isDone
-                ? const Icon(Icons.check, color: Colors.white, size: 16)
-                : Text(
-                    '$step',
-                    style: const TextStyle(
-                      color: Colors.white,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: isDone
+                          ? Colors.green.shade800
+                          : AppColors.textPrimary,
                     ),
                   ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: isDone ? Colors.green.shade800 : AppColors.textPrimary,
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          if (!isDone && !isActive)
-            const Icon(Icons.chevron_right, color: AppColors.textSecondary),
-          if (isActive && onTap != null)
-            const Icon(Icons.upload_file, color: AppColors.primary),
-        ],
+            if (!isDone && !isActive)
+              const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+            if (isActive && onTap != null)
+              const Icon(Icons.upload_file, color: AppColors.primary),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-  Widget _buildVerifiedDashboard(BengkelDashboardViewModel bengkelViewModel, BengkelOrdersViewModel ordersViewModel) {
+  Widget _buildVerifiedDashboard(
+    BengkelDashboardViewModel bengkelViewModel,
+    BengkelOrdersViewModel ordersViewModel,
+  ) {
     final now = DateTime.now();
     final bookingsViewModel = context.watch<BengkelBookingViewModel>();
-    
+
     // 1. Pesanan & Booking Hari Ini
     final todayOrders = ordersViewModel.orders.where((order) {
       final orderDate = order.createdAt;
-      return orderDate.year == now.year && orderDate.month == now.month && orderDate.day == now.day;
+      return orderDate.year == now.year &&
+          orderDate.month == now.month &&
+          orderDate.day == now.day;
     }).toList();
-    
+
     final todayBookings = bookingsViewModel.bookings.where((b) {
       final bDate = b.bookingDate;
-      return bDate.year == now.year && bDate.month == now.month && bDate.day == now.day;
+      return bDate.year == now.year &&
+          bDate.month == now.month &&
+          bDate.day == now.day;
     }).toList();
-    
+
     final todayOrdersCount = todayOrders.length + todayBookings.length;
 
     // 2. Pendapatan Hari Ini (Sparepart + Booking Selesai)
@@ -1049,35 +1391,49 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
     // 5. Chart Data (Past 7 Days Revenue - Spareparts + Bookings)
     final List<FlSpot> spots = [];
     final List<String> dayLabels = [];
-    final List<String> weekDays = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+    final List<String> weekDays = [
+      'Sen',
+      'Sel',
+      'Rab',
+      'Kam',
+      'Jum',
+      'Sab',
+      'Min',
+    ];
     double maxRevenue = 0;
     double totalWeekRevenue = 0;
 
     for (int i = 6; i >= 0; i--) {
       final date = now.subtract(Duration(days: i));
       dayLabels.add(weekDays[date.weekday - 1]);
-      
+
       final double dayOrderRev = ordersViewModel.orders
-          .where((o) => (o.isPaid || o.status == 'Selesai') && 
-                        o.createdAt.year == date.year && 
-                        o.createdAt.month == date.month && 
-                        o.createdAt.day == date.day)
+          .where(
+            (o) =>
+                (o.isPaid || o.status == 'Selesai') &&
+                o.createdAt.year == date.year &&
+                o.createdAt.month == date.month &&
+                o.createdAt.day == date.day,
+          )
           .fold(0.0, (sum, o) => sum + o.totalPrice);
 
       final double dayBookingRev = bookingsViewModel.bookings
-          .where((b) => (b.status == 'Selesai' || b.status == 'Ulasan Dikirim') && 
-                        b.bookingDate.year == date.year && 
-                        b.bookingDate.month == date.month && 
-                        b.bookingDate.day == date.day)
+          .where(
+            (b) =>
+                (b.status == 'Selesai' || b.status == 'Ulasan Dikirim') &&
+                b.bookingDate.year == date.year &&
+                b.bookingDate.month == date.month &&
+                b.bookingDate.day == date.day,
+          )
           .fold(0.0, (sum, b) => sum + (b.totalPrice ?? 0).toDouble());
-      
+
       final double dayRevenue = dayOrderRev + dayBookingRev;
       totalWeekRevenue += dayRevenue;
       if (dayRevenue > maxRevenue) maxRevenue = dayRevenue;
-      
+
       spots.add(FlSpot((6 - i).toDouble(), dayRevenue));
     }
-    
+
     double chartMaxY = maxRevenue > 0 ? maxRevenue * 1.2 : 100.0;
 
     // Helper formatter
@@ -1104,17 +1460,24 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BengkelFinanceReportScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const BengkelFinanceReportScreen(),
+                  ),
                 );
               },
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.2),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withValues(alpha: 0.05),
@@ -1131,7 +1494,11 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.analytics_outlined, color: AppColors.primary, size: 20),
+                      child: const Icon(
+                        Icons.analytics_outlined,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -1140,16 +1507,26 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                         children: const [
                           Text(
                             'Laporan Keuangan Bengkel',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.textPrimary),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                           Text(
                             'Lihat analisis detail pendapatan sparepart & servis',
-                            style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: AppColors.textSecondary,
+                    ),
                   ],
                 ),
               ),
@@ -1175,16 +1552,27 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                         const SizedBox(height: 8),
                         Text(
                           formatPrice(todayRevenue),
-                          style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: const [
-                            Icon(Icons.check_circle_outline, color: Colors.lightBlueAccent, size: 16),
+                            Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.lightBlueAccent,
+                              size: 16,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               'Sudah dibayar',
-                              style: TextStyle(color: Colors.lightBlueAccent, fontSize: 12),
+                              style: TextStyle(
+                                color: Colors.lightBlueAccent,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -1206,21 +1594,35 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                       children: [
                         const Text(
                           'Pesanan Hari Ini',
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           '$todayOrdersCount',
-                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: const [
-                            Icon(Icons.assignment_turned_in, color: Colors.green, size: 16),
+                            Icon(
+                              Icons.assignment_turned_in,
+                              color: Colors.green,
+                              size: 16,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               'Transaksi hari ini',
-                              style: TextStyle(color: Colors.green, fontSize: 12),
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -1248,21 +1650,35 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                       children: [
                         const Text(
                           'Total Pelanggan',
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           '$uniqueCustomers',
-                          style: const TextStyle(color: AppColors.textPrimary, fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Row(
                           children: const [
-                            Icon(Icons.people_alt, color: Colors.blueAccent, size: 16),
+                            Icon(
+                              Icons.people_alt,
+                              color: Colors.blueAccent,
+                              size: 16,
+                            ),
                             SizedBox(width: 4),
                             Text(
-                              'Pelanggan unik',
-                              style: TextStyle(color: Colors.blueAccent, fontSize: 12),
+                              'Pelanggan Baru',
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
@@ -1276,7 +1692,9 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const BengkelReviewsScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const BengkelReviewsScreen(),
+                        ),
                       );
                     },
                     child: Container(
@@ -1291,7 +1709,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                         children: [
                           const Text(
                             'Rating',
-                            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Row(
@@ -1305,17 +1726,28 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                 ),
                               ),
                               const SizedBox(width: 4),
-                              const Icon(Icons.star, color: Colors.amber, size: 24),
+                              const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                                size: 24,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              const Icon(Icons.star_border, color: AppColors.textSecondary, size: 16),
+                              const Icon(
+                                Icons.star_border,
+                                color: AppColors.textSecondary,
+                                size: 16,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 '$reviewsCount ulasan',
-                                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                ),
                               ),
                             ],
                           ),
@@ -1344,11 +1776,18 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                     children: [
                       const Text(
                         'Pendapatan 7 Hari Terakhir',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         '${formatPrice(totalWeekRevenue)} total',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF243B53)),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF243B53),
+                        ),
                       ),
                     ],
                   ),
@@ -1359,15 +1798,33 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                       LineChartData(
                         gridData: FlGridData(show: false),
                         titlesData: FlTitlesData(
-                          leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
+                              interval: 1,
                               getTitlesWidget: (value, meta) {
-                                if (value.toInt() >= 0 && value.toInt() < dayLabels.length) {
-                                  return Text(dayLabels[value.toInt()], style: const TextStyle(fontSize: 12, color: AppColors.textSecondary));
+                                if (value.toInt() >= 0 &&
+                                    value.toInt() < dayLabels.length) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: Text(
+                                      dayLabels[value.toInt()],
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: AppColors.textSecondary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
                                 }
                                 return const Text('');
                               },
@@ -1386,7 +1843,9 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                             dotData: FlDotData(show: false),
                             belowBarData: BarAreaData(
                               show: true,
-                              color: const Color(0xFF243B53).withValues(alpha: 0.1),
+                              color: const Color(
+                                0xFF243B53,
+                              ).withValues(alpha: 0.1),
                             ),
                           ),
                         ],
@@ -1417,7 +1876,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                     children: [
                       const Text(
                         'Pesanan Terbaru',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       InkWell(
                         onTap: () {
@@ -1425,8 +1887,18 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                         },
                         child: Row(
                           children: const [
-                            Text('Semua', style: TextStyle(color: AppColors.primary, fontSize: 14)),
-                            Icon(Icons.chevron_right, color: AppColors.primary, size: 16),
+                            Text(
+                              'Semua',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right,
+                              color: AppColors.primary,
+                              size: 16,
+                            ),
                           ],
                         ),
                       ),
@@ -1436,17 +1908,25 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                   if (recentOrders.isEmpty)
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: Text('Belum ada pesanan.', style: TextStyle(color: AppColors.textSecondary)),
+                      child: Text(
+                        'Belum ada pesanan.',
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
                     )
                   else
                     ...recentOrders.map((o) {
-                      final itemsText = o.items.map((i) => i.sparepart?.name ?? 'Item').join(', ');
-                      final dateText = '${o.createdAt.hour.toString().padLeft(2, '0')}:${o.createdAt.minute.toString().padLeft(2, '0')}';
+                      final itemsText = o.items
+                          .map((i) => i.sparepart?.name ?? 'Item')
+                          .join(', ');
+                      final dateText =
+                          '${o.createdAt.hour.toString().padLeft(2, '0')}:${o.createdAt.minute.toString().padLeft(2, '0')}';
                       return Column(
                         children: [
                           _buildOrderItem(
                             name: 'Pelanggan',
-                            service: itemsText.isNotEmpty ? itemsText : 'Pesanan Sparepart',
+                            service: itemsText.isNotEmpty
+                                ? itemsText
+                                : 'Pesanan Sparepart',
                             status: o.status,
                             time: dateText,
                           ),
@@ -1475,19 +1955,35 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                     children: [
                       const Text(
                         'Ulasan Terbaru',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const BengkelReviewsScreen()),
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const BengkelReviewsScreen(),
+                            ),
                           );
                         },
                         child: Row(
                           children: const [
-                            Text('Semua', style: TextStyle(color: AppColors.primary, fontSize: 14)),
-                            Icon(Icons.chevron_right, color: AppColors.primary, size: 16),
+                            Text(
+                              'Semua',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Icon(
+                              Icons.chevron_right,
+                              color: AppColors.primary,
+                              size: 16,
+                            ),
                           ],
                         ),
                       ),
@@ -1503,7 +1999,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
                       child: Center(
-                        child: Text('Belum ada ulasan.', style: TextStyle(color: AppColors.textSecondary)),
+                        child: Text(
+                          'Belum ada ulasan.',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
                       ),
                     )
                   else
@@ -1518,13 +2017,21 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                 width: 36,
                                 height: 36,
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(alpha: 0.1),
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.1,
+                                  ),
                                   shape: BoxShape.circle,
                                 ),
                                 alignment: Alignment.center,
                                 child: Text(
-                                  (r['customer'] as String).isNotEmpty ? (r['customer'] as String)[0].toUpperCase() : 'P',
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                                  (r['customer'] as String).isNotEmpty
+                                      ? (r['customer'] as String)[0]
+                                            .toUpperCase()
+                                      : 'P',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -1533,24 +2040,39 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           r['customer'] as String,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
                                         ),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
                                           decoration: BoxDecoration(
-                                            color: r['type'] == 'Servis' ? Colors.orange.shade50 : Colors.blue.shade50,
-                                            borderRadius: BorderRadius.circular(4),
+                                            color: r['type'] == 'Servis'
+                                                ? Colors.orange.shade50
+                                                : Colors.blue.shade50,
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
                                           ),
                                           child: Text(
-                                            r['type'] == 'Servis' ? 'Servis' : 'Sparepart',
+                                            r['type'] == 'Servis'
+                                                ? 'Servis'
+                                                : 'Sparepart',
                                             style: TextStyle(
-                                              fontSize: 9, 
+                                              fontSize: 9,
                                               fontWeight: FontWeight.bold,
-                                              color: r['type'] == 'Servis' ? Colors.orange : Colors.blue,
+                                              color: r['type'] == 'Servis'
+                                                  ? Colors.orange
+                                                  : Colors.blue,
                                             ),
                                           ),
                                         ),
@@ -1561,34 +2083,53 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
                                       children: [
                                         ...List.generate(5, (index) {
                                           return Icon(
-                                            index < (r['rating'] as double).floor() ? Icons.star : Icons.star_border,
+                                            index <
+                                                    (r['rating'] as double)
+                                                        .floor()
+                                                ? Icons.star
+                                                : Icons.star_border,
                                             color: Colors.amber,
                                             size: 14,
                                           );
                                         }),
                                         const SizedBox(width: 4),
                                         Text(
-                                          (r['rating'] as double).toStringAsFixed(1),
-                                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                                          (r['rating'] as double)
+                                              .toStringAsFixed(1),
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.textPrimary,
+                                          ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      r['type'] == 'Servis' ? 'Layanan: ${r['category']}' : 'Produk: ${r['category']}',
-                                      style: TextStyle(fontSize: 11, color: Colors.grey.shade600, fontStyle: FontStyle.italic),
+                                      r['type'] == 'Servis'
+                                          ? 'Layanan: ${r['category']}'
+                                          : 'Produk: ${r['category']}',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey.shade600,
+                                        fontStyle: FontStyle.italic,
+                                      ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       r['comment'] as String,
-                                      style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.textPrimary,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
                             ],
                           ),
-                          if (r != bengkelViewModel.reviewsList.take(3).last) ...[
+                          if (r !=
+                              bengkelViewModel.reviewsList.take(3).last) ...[
                             const SizedBox(height: 12),
                             const Divider(height: 1),
                             const SizedBox(height: 12),
@@ -1626,7 +2167,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
             alignment: Alignment.center,
             child: Text(
               name[0],
-              style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -1636,11 +2180,17 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
                 ),
                 Text(
                   service,
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
@@ -1666,7 +2216,10 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
               const SizedBox(height: 4),
               Text(
                 time,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),

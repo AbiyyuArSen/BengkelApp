@@ -225,8 +225,8 @@ class _EmergencySosScreenState extends State<EmergencySosScreen> {
     
     if (profileVM.vehicles.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tambahkan kendaraan aktif di Garasi terlebih dahulu')),
-      );
+  SnackBar(content: Text('Tambahkan kendaraan aktif di Garasi terlebih dahulu'), backgroundColor: Colors.blue),
+);
       return;
     }
     
@@ -269,8 +269,8 @@ class _EmergencySosScreenState extends State<EmergencySosScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal membuat pesanan darurat: $e')),
-        );
+  SnackBar(content: Text('Gagal membuat pesanan darurat: $e'), backgroundColor: Colors.blue),
+);
       }
     } finally {
       if (mounted) {

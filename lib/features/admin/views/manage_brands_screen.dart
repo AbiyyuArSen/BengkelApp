@@ -23,8 +23,8 @@ class _ManageBrandsScreenState extends State<ManageBrandsScreen> {
     final nameController = TextEditingController(text: initialName);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(id == null ? 'Add Vehicle Brand' : 'Edit Vehicle Brand'),
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(id == null ? 'Add Brand' : 'Edit Brand'),
         content: TextField(
           controller: nameController,
           decoration: const InputDecoration(
@@ -35,7 +35,7 @@ class _ManageBrandsScreenState extends State<ManageBrandsScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogCtx),
             child: const Text('Cancel'),
           ),
           TextButton(
@@ -45,21 +45,23 @@ class _ManageBrandsScreenState extends State<ManageBrandsScreen> {
                 final viewModel = context.read<AdminConfigViewModel>();
                 try {
                   if (id == null) {
-                    await viewModel.addBrand(name);
+                    await viewModel.addBrand(name, 'Keduanya');
                   } else {
-                    await viewModel.updateBrand(id, name);
+                    await viewModel.updateBrand(id, name, 'Keduanya');
+                  }
+                  if (dialogCtx.mounted) {
+                    Navigator.pop(dialogCtx);
                   }
                   if (context.mounted) {
-                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(id == null ? 'Brand added successfully' : 'Brand updated successfully')),
-                    );
+  SnackBar(content: Text(id == null ? 'Brand added successfully' : 'Brand updated successfully'), backgroundColor: Colors.green),
+);
                   }
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Operation failed: $e')),
-                    );
+  SnackBar(content: Text('Operation failed: $e'), backgroundColor: Colors.red),
+);
                   }
                 }
               }
@@ -149,14 +151,14 @@ class _ManageBrandsScreenState extends State<ManageBrandsScreen> {
                                     await viewModel.deleteBrand(brand.id);
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Brand deleted successfully')),
-                                      );
+  SnackBar(content: Text('Brand deleted successfully'), backgroundColor: Colors.green),
+);
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Failed to delete: $e')),
-                                      );
+  SnackBar(content: Text('Failed to delete: $e'), backgroundColor: Colors.red),
+);
                                     }
                                   }
                                 }

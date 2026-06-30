@@ -36,8 +36,8 @@ class _WorkshopDetailScreenState extends State<WorkshopDetailScreen> {
   Future<void> _launchWhatsApp(BuildContext context, String? phone) async {
     if (phone == null || phone.isEmpty || phone == '-') {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nomor telepon tidak tersedia')),
-      );
+  SnackBar(content: Text('Nomor telepon tidak tersedia'), backgroundColor: Colors.blue),
+);
       return;
     }
     String formattedPhone = phone.replaceAll(RegExp(r'\D'), '');
@@ -50,8 +50,8 @@ class _WorkshopDetailScreenState extends State<WorkshopDetailScreen> {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal membuka WhatsApp')),
-        );
+  SnackBar(content: Text('Gagal membuka WhatsApp'), backgroundColor: Colors.blue),
+);
       }
     }
   }

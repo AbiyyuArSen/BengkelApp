@@ -67,14 +67,14 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                   if (context.mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(id == null ? 'Category added successfully' : 'Category updated successfully')),
-                    );
+  SnackBar(content: Text(id == null ? 'Category added successfully' : 'Category updated successfully'), backgroundColor: Colors.blue),
+);
                   }
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Operation failed: $e')),
-                    );
+  SnackBar(content: Text('Operation failed: $e'), backgroundColor: Colors.blue),
+);
                   }
                 }
               }
@@ -167,14 +167,14 @@ class _ManageCategoriesScreenState extends State<ManageCategoriesScreen> {
                                     await viewModel.deleteCategory(category.id);
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Category deleted successfully')),
-                                      );
+  SnackBar(content: Text('Category deleted successfully'), backgroundColor: Colors.blue),
+);
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Failed to delete: $e')),
-                                      );
+  SnackBar(content: Text('Failed to delete: $e'), backgroundColor: Colors.blue),
+);
                                     }
                                   }
                                 }

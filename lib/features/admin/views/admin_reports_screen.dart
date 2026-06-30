@@ -60,17 +60,14 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
 
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Bengkel "${report.bengkel?['name']}" berhasil ditangguhkan!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+  SnackBar(content: Text('Bengkel "${report.bengkel?['name']}" berhasil ditangguhkan!'), backgroundColor: Colors.green),
+);
         context.read<WorkshopReportViewModel>().fetchReports();
       } else if (mounted) {
         final errorMsg = context.read<WorkshopReportViewModel>().error ?? 'Terjadi kesalahan';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal melakukan suspensi: $errorMsg'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Gagal melakukan suspensi: $errorMsg'), backgroundColor: Colors.red),
+);
       }
     }
   }
@@ -103,14 +100,14 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
 
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Laporan diabaikan.'), backgroundColor: Colors.black87),
-        );
+  SnackBar(content: Text('Laporan diabaikan.'), backgroundColor: Colors.blue),
+);
         context.read<WorkshopReportViewModel>().fetchReports();
       } else if (mounted) {
         final errorMsg = context.read<WorkshopReportViewModel>().error ?? 'Terjadi kesalahan';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal memperbarui status: $errorMsg'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Gagal memperbarui status: $errorMsg'), backgroundColor: Colors.red),
+);
       }
     }
   }
@@ -152,17 +149,14 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
 
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Status pembekuan "${report.bengkel?['name']}" berhasil dibuka! Bengkel aktif kembali.'),
-            backgroundColor: Colors.green,
-          ),
-        );
+  SnackBar(content: Text('Status pembekuan "${report.bengkel?['name']}" berhasil dibuka! Bengkel aktif kembali.'), backgroundColor: Colors.green),
+);
         context.read<WorkshopReportViewModel>().fetchReports();
       } else if (mounted) {
         final errorMsg = context.read<WorkshopReportViewModel>().error ?? 'Terjadi kesalahan';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal membuka suspensi: $errorMsg'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Gagal membuka suspensi: $errorMsg'), backgroundColor: Colors.red),
+);
       }
     }
   }

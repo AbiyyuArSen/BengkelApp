@@ -350,6 +350,7 @@ class _BengkelFinanceReportScreenState extends State<BengkelFinanceReportScreen>
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
+                                interval: 1,
                                 getTitlesWidget: (value, meta) {
                                   if (value.toInt() >= 0 && value.toInt() < dayLabels.length) {
                                     return Padding(

@@ -30,7 +30,6 @@ class _AdminVerificationScreenState extends State<AdminVerificationScreen> {
       final data = await _supabase
           .from('bengkels')
           .select('*, users(full_name, email)')
-          .inFilter('status', ['tahap 2', 'diterima', 'active', 'di tolak'])
           .order('created_at', ascending: false);
       setState(() => _bengkels = List<Map<String, dynamic>>.from(data));
     } catch (e) {
@@ -296,10 +295,13 @@ class _AdminVerificationScreenState extends State<AdminVerificationScreen> {
         return 'Terverifikasi';
       case 'tahap 2':
         return 'Menunggu Verifikasi';
+      case 'tahap 1':
       case 'selesai tahap 1':
         return 'Profil Lengkap';
       case 'di tolak':
         return 'Ditolak';
+      case 'pending':
+        return 'Menunggu Profil';
       default:
         return 'Pending';
     }

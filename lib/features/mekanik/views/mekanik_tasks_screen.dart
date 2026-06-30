@@ -511,17 +511,14 @@ class _MekanikTasksScreenState extends State<MekanikTasksScreen> {
                           await vm.acceptTask(task.id);
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Tugas Diterima! ✅'),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
+  SnackBar(content: Text('Tugas Diterima! ✅'), backgroundColor: Colors.green),
+);
                           }
                         } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: $e')),
-                            );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
                           }
                         }
                       },
@@ -543,14 +540,14 @@ class _MekanikTasksScreenState extends State<MekanikTasksScreen> {
                           await vm.rejectTask(task.id);
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Tugas ditolak')),
-                            );
+  SnackBar(content: Text('Tugas ditolak'), backgroundColor: Colors.blue),
+);
                           }
                         } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: $e')),
-                            );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
                           }
                         }
                       },
@@ -580,15 +577,11 @@ class _MekanikTasksScreenState extends State<MekanikTasksScreen> {
                     if (bookingDay.isAfter(today)) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              task.isHomeService
+  SnackBar(content: Text(task.isHomeService
                                   ? 'Belum masuk tanggal booking (${task.bookingDate.day}/${task.bookingDate.month}/${task.bookingDate.year}). Anda baru dapat memulai perjalanan pada hari H.'
                                   : 'Belum masuk tanggal booking (${task.bookingDate.day}/${task.bookingDate.month}/${task.bookingDate.year}). Konfirmasi kedatangan baru dapat dilakukan pada hari H.',
-                            ),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                            ), backgroundColor: Colors.red),
+);
                       }
                       return;
                     }
@@ -600,11 +593,8 @@ class _MekanikTasksScreenState extends State<MekanikTasksScreen> {
                       );
                       if (hasOngoing) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Anda memiliki tugas lain yang sedang berjalan. Selesaikan tugas tersebut terlebih dahulu.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+  SnackBar(content: Text('Anda memiliki tugas lain yang sedang berjalan. Selesaikan tugas tersebut terlebih dahulu.'), backgroundColor: Colors.red),
+);
                         return;
                       }
 
@@ -645,11 +635,8 @@ class _MekanikTasksScreenState extends State<MekanikTasksScreen> {
                                   if (hasOngoing) {
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Anda memiliki tugas lain yang sedang berjalan. Selesaikan tugas tersebut terlebih dahulu.'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
+  SnackBar(content: Text('Anda memiliki tugas lain yang sedang berjalan. Selesaikan tugas tersebut terlebih dahulu.'), backgroundColor: Colors.red),
+);
                                     }
                                     return;
                                   }
@@ -658,17 +645,14 @@ class _MekanikTasksScreenState extends State<MekanikTasksScreen> {
                                     await vm.confirmCustomerArrival(task.id);
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Kedatangan customer dikonfirmasi! ✅'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
+  SnackBar(content: Text('Kedatangan customer dikonfirmasi! ✅'), backgroundColor: Colors.green),
+);
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Error: $e')),
-                                      );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.blue),
+);
                                     }
                                   }
                                 },

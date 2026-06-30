@@ -658,12 +658,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       : () {
                           viewModel.addToCartWithQty(product.id, _quantity);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('$_quantity produk berhasil ditambahkan ke keranjang!'),
-                              backgroundColor: Colors.green,
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
+  SnackBar(content: Text('$_quantity produk berhasil ditambahkan ke keranjang!'), backgroundColor: Colors.green),
+);
                         },
                   child: const Icon(Icons.add_shopping_cart, size: 20),
                 ),

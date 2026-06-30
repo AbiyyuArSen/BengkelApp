@@ -259,11 +259,8 @@ class FinancePdfHelper {
       debugPrint('[PDFExport] Stacktrace: $stack');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Gagal mengekspor PDF: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  SnackBar(content: Text('Gagal mengekspor PDF: $e'), backgroundColor: Colors.red),
+);
       }
     }
   }

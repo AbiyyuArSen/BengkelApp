@@ -287,15 +287,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Kendaraan berhasil ditambahkan!')),
-                          );
+  SnackBar(content: Text('Kendaraan berhasil ditambahkan!'), backgroundColor: Colors.blue),
+);
                           Navigator.pop(context);
                         }
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Gagal menambahkan kendaraan: $e')),
-                          );
+  SnackBar(content: Text('Gagal menambahkan kendaraan: $e'), backgroundColor: Colors.blue),
+);
                         }
                       }
                     }

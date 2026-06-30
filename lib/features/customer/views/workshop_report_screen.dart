@@ -46,8 +46,8 @@ class _WorkshopReportScreenState extends State<WorkshopReportScreen> {
       debugPrint('[Report] Error picking image: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal memilih gambar bukti')),
-        );
+  SnackBar(content: Text('Gagal memilih gambar bukti'), backgroundColor: Colors.blue),
+);
       }
     }
   }
@@ -132,16 +132,16 @@ class _WorkshopReportScreenState extends State<WorkshopReportScreen> {
           if (mounted) {
             final errorMsg = context.read<WorkshopReportViewModel>().error ?? 'Terjadi kesalahan saat mengirim laporan';
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Gagal mengirim laporan: $errorMsg'), backgroundColor: Colors.red),
-            );
+  SnackBar(content: Text('Gagal mengirim laporan: $errorMsg'), backgroundColor: Colors.red),
+);
           }
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal mengunggah bukti: $e'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Gagal mengunggah bukti: $e'), backgroundColor: Colors.red),
+);
       }
     } finally {
       if (mounted) {

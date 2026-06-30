@@ -204,8 +204,8 @@ class _RegisterPartnerScreenState extends State<RegisterPartnerScreen> {
                         );
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registrasi Mitra berhasil! Silakan login.')),
-                        );
+  SnackBar(content: Text('Registrasi Mitra berhasil! Silakan login.'), backgroundColor: Colors.blue),
+);
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -214,8 +214,8 @@ class _RegisterPartnerScreenState extends State<RegisterPartnerScreen> {
                       } catch (e) {
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Registrasi gagal: ${e.toString()}')),
-                        );
+  SnackBar(content: Text('Registrasi gagal: ${e.toString()}'), backgroundColor: Colors.blue),
+);
                       }
                     },
                   ),

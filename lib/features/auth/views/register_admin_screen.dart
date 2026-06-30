@@ -112,8 +112,8 @@ class _RegisterAdminScreenState extends State<RegisterAdminScreen> {
                           _phoneController.text.trim().isEmpty ||
                           _passwordController.text.trim().isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Semua field harus diisi!')),
-                        );
+  SnackBar(content: Text('Semua field harus diisi!'), backgroundColor: Colors.blue),
+);
                         return;
                       }
                       try {
@@ -125,8 +125,8 @@ class _RegisterAdminScreenState extends State<RegisterAdminScreen> {
                         );
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registrasi Admin berhasil! Silakan login.')),
-                        );
+  SnackBar(content: Text('Registrasi Admin berhasil! Silakan login.'), backgroundColor: Colors.blue),
+);
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -135,8 +135,8 @@ class _RegisterAdminScreenState extends State<RegisterAdminScreen> {
                       } catch (e) {
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Registrasi gagal: ${e.toString()}')),
-                        );
+  SnackBar(content: Text('Registrasi gagal: ${e.toString()}'), backgroundColor: Colors.blue),
+);
                       }
                     },
                   ),

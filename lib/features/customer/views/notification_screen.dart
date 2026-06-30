@@ -82,11 +82,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         onDismissed: (direction) {
                           viewModel.deleteNotification(item.id);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Notification deleted'),
-                              duration: Duration(seconds: 1),
-                            ),
-                          );
+  SnackBar(content: Text('Notification deleted'), backgroundColor: Colors.blue),
+);
                         },
                         child: GestureDetector(
                           onTap: () {

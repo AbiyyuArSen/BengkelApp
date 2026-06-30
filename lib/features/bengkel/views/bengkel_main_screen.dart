@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../viewmodels/bengkel_dashboard_viewmodel.dart';
 import 'bengkel_dashboard_screen.dart';
 import 'bengkel_orders_screen.dart';
+import 'bengkel_store_screen.dart';
 import 'bengkel_mechanics_screen.dart';
 import 'bengkel_profile_screen.dart';
 import 'bengkel_booking_list_screen.dart';
@@ -22,7 +23,7 @@ class _BengkelMainScreenState extends State<BengkelMainScreen> {
   final List<Widget> _screens = [
     const BengkelDashboardScreen(),
     const BengkelBookingListScreen(),
-    const BengkelOrdersScreen(),
+    const BengkelStoreScreen(),
     const BengkelMechanicsScreen(),
     const BengkelProfileScreen(),
   ];

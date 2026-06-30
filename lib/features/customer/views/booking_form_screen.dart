@@ -178,8 +178,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
         if (_selectedTimeSlot != null && _isSlotUnavailable(_selectedTimeSlot!)) {
           _selectedTimeSlot = null;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Slot waktu yang dipilih telah terisi atau bentrok.')),
-          );
+  SnackBar(content: Text('Slot waktu yang dipilih telah terisi atau bentrok.'), backgroundColor: Colors.blue),
+);
         }
       });
     } catch (e) {
@@ -259,15 +259,15 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedVehicle == null || _selectedServices.isEmpty || _selectedDate == null || _selectedTimeSlot == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Harap lengkapi semua pilihan jadwal, kendaraan, dan layanan')),
-      );
+  SnackBar(content: Text('Harap lengkapi semua pilihan jadwal, kendaraan, dan layanan'), backgroundColor: Colors.blue),
+);
       return;
     }
 
     if (_isSlotUnavailable(_selectedTimeSlot!)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Slot waktu terpilih sudah terisi atau bentrok. Silakan pilih slot lain.')),
-      );
+  SnackBar(content: Text('Slot waktu terpilih sudah terisi atau bentrok. Silakan pilih slot lain.'), backgroundColor: Colors.blue),
+);
       return;
     }
 
@@ -299,15 +299,15 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Booking berhasil dibuat! Menunggu konfirmasi bengkel.')),
-        );
+  SnackBar(content: Text('Booking berhasil dibuat! Menunggu konfirmasi bengkel.'), backgroundColor: Colors.blue),
+);
         Navigator.pop(context); // close form
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal membuat booking: $e')),
-        );
+  SnackBar(content: Text('Gagal membuat booking: $e'), backgroundColor: Colors.blue),
+);
       }
     }
   }
@@ -475,8 +475,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                                     if (_selectedTimeSlot != null && _isSlotUnavailable(_selectedTimeSlot!)) {
                                       _selectedTimeSlot = null;
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Jadwal bentrok karena durasi layanan berubah.')),
-                                      );
+  SnackBar(content: Text('Jadwal bentrok karena durasi layanan berubah.'), backgroundColor: Colors.blue),
+);
                                     }
                                   });
                                 },
@@ -724,11 +724,8 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
                                   onTap: isUnavailable
                                       ? () {
                                           ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Jam $time sudah terisi/bentrok dengan booking lain.'),
-                                              duration: const Duration(seconds: 2),
-                                            ),
-                                          );
+  SnackBar(content: Text('Jam $time sudah terisi/bentrok dengan booking lain.'), backgroundColor: Colors.blue),
+);
                                         }
                                       : () => setState(() => _selectedTimeSlot = time),
                                   child: Container(

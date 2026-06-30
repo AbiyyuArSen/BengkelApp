@@ -74,8 +74,8 @@ class _MekanikReportScreenState extends State<MekanikReportScreen> {
   Future<void> _submit() async {
     if (_reportController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Laporan pengerjaan tidak boleh kosong')),
-      );
+  SnackBar(content: Text('Laporan pengerjaan tidak boleh kosong'), backgroundColor: Colors.blue),
+);
       return;
     }
 
@@ -101,18 +101,15 @@ class _MekanikReportScreenState extends State<MekanikReportScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Servis berhasil diselesaikan! ✅'),
-            backgroundColor: Color(0xFF00C853),
-          ),
-        );
+  SnackBar(content: Text('Servis berhasil diselesaikan! ✅'), backgroundColor: Colors.blue),
+);
         Navigator.pop(context); // back to list
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menyelesaikan servis: $e')),
-        );
+  SnackBar(content: Text('Gagal menyelesaikan servis: $e'), backgroundColor: Colors.blue),
+);
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

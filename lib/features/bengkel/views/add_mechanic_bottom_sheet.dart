@@ -41,8 +41,8 @@ class _AddMechanicBottomSheetState extends State<AddMechanicBottomSheet> {
     if (_formKey.currentState!.validate()) {
       if (_selectedSpecialties.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Pilih minimal satu spesialisasi')),
-        );
+  SnackBar(content: Text('Pilih minimal satu spesialisasi'), backgroundColor: Colors.blue),
+);
         return;
       }
 
@@ -62,14 +62,14 @@ class _AddMechanicBottomSheetState extends State<AddMechanicBottomSheet> {
         if (mounted) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Mekanik berhasil ditambahkan')),
-          );
+  SnackBar(content: Text('Mekanik berhasil ditambahkan'), backgroundColor: Colors.blue),
+);
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal menambahkan mekanik: $e')),
-          );
+  SnackBar(content: Text('Gagal menambahkan mekanik: $e'), backgroundColor: Colors.blue),
+);
         }
       }
     }

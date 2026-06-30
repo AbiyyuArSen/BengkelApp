@@ -87,6 +87,7 @@ class _BengkelBookingListScreenState extends State<BengkelBookingListScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
+        toolbarHeight: 72,
         backgroundColor: const Color(0xFF1E2843),
         elevation: 0,
         titleSpacing: 0,

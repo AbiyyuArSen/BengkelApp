@@ -67,14 +67,14 @@ class _ManageTypesScreenState extends State<ManageTypesScreen> {
                   if (context.mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(id == null ? 'Type added successfully' : 'Type updated successfully')),
-                    );
+  SnackBar(content: Text(id == null ? 'Type added successfully' : 'Type updated successfully'), backgroundColor: Colors.blue),
+);
                   }
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Operation failed: $e')),
-                    );
+  SnackBar(content: Text('Operation failed: $e'), backgroundColor: Colors.blue),
+);
                   }
                 }
               }
@@ -167,14 +167,14 @@ class _ManageTypesScreenState extends State<ManageTypesScreen> {
                                     await viewModel.deleteType(type.id);
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Type deleted successfully')),
-                                      );
+  SnackBar(content: Text('Type deleted successfully'), backgroundColor: Colors.blue),
+);
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Failed to delete: $e')),
-                                      );
+  SnackBar(content: Text('Failed to delete: $e'), backgroundColor: Colors.blue),
+);
                                     }
                                   }
                                 }

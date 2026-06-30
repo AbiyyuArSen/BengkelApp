@@ -61,57 +61,79 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
  
   void _showAddBrandDialog(BuildContext context) {
     final ctrl = TextEditingController();
+    String selectedType = 'Mobil';
+    
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        scrollable: true,
-        title: const Text('Tambah Merek Kendaraan', style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Nama Merek:', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-            const SizedBox(height: 6),
-            TextField(
-              controller: ctrl,
-              decoration: InputDecoration(
-                hintText: 'Contoh: Honda, Toyota, Yamaha',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              autofocus: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            scrollable: true,
+            title: const Text('Tambah Merek Kendaraan', style: TextStyle(fontWeight: FontWeight.bold)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Nama Merek:', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: ctrl,
+                  decoration: InputDecoration(
+                    hintText: 'Contoh: Honda, Toyota, Yamaha',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  autofocus: true,
+                ),
+                const SizedBox(height: 16),
+                const Text('Jenis Kendaraan:', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                const SizedBox(height: 6),
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: ['Mobil', 'Motor', 'Keduanya']
+                      .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                      .toList(),
+                  onChanged: (val) {
+                    if (val != null) setState(() => selectedType = val);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B3A5E)),
-            onPressed: () async {
-              final name = ctrl.text.trim();
-              if (name.isEmpty) return;
-              try {
-                await context.read<AdminConfigViewModel>().addBrand(name);
-                if (ctx.mounted) {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Merek "$name" berhasil ditambahkan'), backgroundColor: Colors.green),
-                  );
-                }
-              } catch (e) {
-                if (ctx.mounted) {
-                  ScaffoldMessenger.of(ctx).showSnackBar(
-                    SnackBar(content: Text('Gagal menambahkan: $e'), backgroundColor: Colors.red),
-                  );
-                }
-              }
-            },
-            child: const Text('Simpan', style: TextStyle(color: Colors.white)),
-          ),
-        ],
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B3A5E)),
+                onPressed: () async {
+                  final name = ctrl.text.trim();
+                  if (name.isEmpty) return;
+                  try {
+                    await context.read<AdminConfigViewModel>().addBrand(name, selectedType);
+                    if (ctx.mounted) {
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Merek "$name" berhasil ditambahkan'), backgroundColor: Colors.green),
+);
+                    }
+                  } catch (e) {
+                    if (ctx.mounted) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+  SnackBar(content: Text('Gagal menambahkan: $e'), backgroundColor: Colors.red),
+);
+                    }
+                  }
+                },
+                child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          );
+        }
       ),
     );
   }
@@ -119,7 +141,7 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
   void _showManageBrandDialog(BuildContext context, VehicleBrandModel brand) {
     final ctrl = TextEditingController(text: brand.name);
     final newModelCtrl = TextEditingController();
-    String selectedType = 'Mobil';
+    String selectedType = brand.type;
 
     showDialog(
       context: context,
@@ -151,6 +173,28 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                         ),
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const Text('Jenis Kendaraan:', style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: selectedType,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        items: ['Mobil', 'Motor', 'Keduanya']
+                            .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) setState(() => selectedType = val);
+                        },
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1B3A5E)),
@@ -158,18 +202,18 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                         final newName = ctrl.text.trim();
                         if (newName.isEmpty) return;
                         try {
-                          await context.read<AdminConfigViewModel>().updateBrand(brand.id, newName);
+                          await context.read<AdminConfigViewModel>().updateBrand(brand.id, newName, selectedType);
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Merek berhasil diperbarui'), backgroundColor: Colors.green),
-                            );
+  SnackBar(content: Text('Merek berhasil diperbarui'), backgroundColor: Colors.green),
+);
                             Navigator.pop(ctx);
                           }
                         } catch (e) {
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(ctx).showSnackBar(
-                              SnackBar(content: Text('Gagal memperbarui: $e'), backgroundColor: Colors.red),
-                            );
+  SnackBar(content: Text('Gagal memperbarui: $e'), backgroundColor: Colors.red),
+);
                           }
                         }
                       },
@@ -204,14 +248,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                           if (ctx.mounted) {
                             Navigator.pop(ctx);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Merek berhasil dihapus'), backgroundColor: Colors.green),
-                            );
+  SnackBar(content: Text('Merek berhasil dihapus'), backgroundColor: Colors.green),
+);
                           }
                         } catch (e) {
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(ctx).showSnackBar(
-                              SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
-                            );
+  SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
+);
                           }
                         }
                       }
@@ -273,14 +317,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                           if (ctx.mounted) {
                             newModelCtrl.clear();
                             ScaffoldMessenger.of(ctx).showSnackBar(
-                              const SnackBar(content: Text('Model ditambahkan'), backgroundColor: Colors.green),
-                            );
+  SnackBar(content: Text('Model ditambahkan'), backgroundColor: Colors.green),
+);
                           }
                         } catch (e) {
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(ctx).showSnackBar(
-                              SnackBar(content: Text('Gagal menambahkan: $e'), backgroundColor: Colors.red),
-                            );
+  SnackBar(content: Text('Gagal menambahkan: $e'), backgroundColor: Colors.red),
+);
                           }
                         }
                       },
@@ -392,14 +436,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                           if (ctx.mounted) {
                             Navigator.pop(ctx);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Model dihapus'), backgroundColor: Colors.green),
-                            );
+  SnackBar(content: Text('Model dihapus'), backgroundColor: Colors.green),
+);
                           }
                         } catch (e) {
                           if (ctx.mounted) {
                             ScaffoldMessenger.of(ctx).showSnackBar(
-                              SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
-                            );
+  SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
+);
                           }
                         }
                       }
@@ -422,14 +466,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                             if (ctx.mounted) {
                               Navigator.pop(ctx);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Model diperbarui'), backgroundColor: Colors.green),
-                              );
+  SnackBar(content: Text('Model diperbarui'), backgroundColor: Colors.green),
+);
                             }
                           } catch (e) {
                             if (ctx.mounted) {
                               ScaffoldMessenger.of(ctx).showSnackBar(
-                                SnackBar(content: Text('Gagal memperbarui: $e'), backgroundColor: Colors.red),
-                              );
+  SnackBar(content: Text('Gagal memperbarui: $e'), backgroundColor: Colors.red),
+);
                             }
                           }
                         },
@@ -499,14 +543,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                 if (ctx.mounted) {
                   Navigator.pop(ctx);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Kategori "$name" berhasil ditambahkan'), backgroundColor: Colors.green),
-                  );
+  SnackBar(content: Text('Kategori "$name" berhasil ditambahkan'), backgroundColor: Colors.green),
+);
                 }
               } catch (e) {
                 if (ctx.mounted) {
                   ScaffoldMessenger.of(ctx).showSnackBar(
-                    SnackBar(content: Text('Gagal menambahkan: $e'), backgroundColor: Colors.red),
-                  );
+  SnackBar(content: Text('Gagal menambahkan: $e'), backgroundColor: Colors.red),
+);
                 }
               }
             },
@@ -578,14 +622,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                       if (ctx.mounted) {
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Kategori berhasil dihapus'), backgroundColor: Colors.green),
-                        );
+  SnackBar(content: Text('Kategori berhasil dihapus'), backgroundColor: Colors.green),
+);
                       }
                     } catch (e) {
                       if (ctx.mounted) {
                         ScaffoldMessenger.of(ctx).showSnackBar(
-                          SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
-                        );
+  SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
+);
                       }
                     }
                   }
@@ -609,14 +653,14 @@ class _AdminConfigScreenState extends State<AdminConfigScreen> {
                         if (ctx.mounted) {
                           Navigator.pop(ctx);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Kategori berhasil diperbarui'), backgroundColor: Colors.green),
-                          );
+  SnackBar(content: Text('Kategori berhasil diperbarui'), backgroundColor: Colors.green),
+);
                         }
                       } catch (e) {
                         if (ctx.mounted) {
                           ScaffoldMessenger.of(ctx).showSnackBar(
-                            SnackBar(content: Text('Gagal memperbarui: $e'), backgroundColor: Colors.red),
-                          );
+  SnackBar(content: Text('Gagal memperbarui: $e'), backgroundColor: Colors.red),
+);
                         }
                       }
                     },

@@ -99,7 +99,7 @@ class AdminConfigViewModel extends ChangeNotifier {
       final bengkelsRes = await _supabase.from('bengkels').select('status');
       final List<dynamic> list = bengkelsRes;
       _totalWorkshops = list.length;
-      _pendingWorkshops = list.where((b) => b['status'] == 'pending' || b['status'] == 'tahap 2').length;
+      _pendingWorkshops = list.where((b) => b['status'] == 'tahap 2').length;
 
       // Fetch bookings for order distribution & top workshops
       final bookingsRes = await _supabase.from('bookings').select('status, bengkel_id, bengkels(name, rating)');
@@ -223,14 +223,17 @@ class AdminConfigViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addBrand(String name) async {
+  Future<void> addBrand(String name, String type) async {
     final nameLower = name.trim().toLowerCase();
     if (_brands.any((b) => b.name.trim().toLowerCase() == nameLower)) {
       throw Exception('Merek "$name" sudah ada di database.');
     }
     _setLoading(true);
     try {
-      await _supabase.from('vehicle_brands').insert({'name': name.trim()});
+      await _supabase.from('vehicle_brands').insert({
+        'name': name.trim(),
+        'type': type,
+      });
       await fetchBrands();
     } catch (e) {
       debugPrint('Error adding brand: $e');
@@ -240,14 +243,17 @@ class AdminConfigViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> updateBrand(String id, String name) async {
+  Future<void> updateBrand(String id, String name, String type) async {
     final nameLower = name.trim().toLowerCase();
     if (_brands.any((b) => b.id != id && b.name.trim().toLowerCase() == nameLower)) {
       throw Exception('Merek "$name" sudah ada di database.');
     }
     _setLoading(true);
     try {
-      await _supabase.from('vehicle_brands').update({'name': name.trim()}).eq('id', id);
+      await _supabase.from('vehicle_brands').update({
+        'name': name.trim(),
+        'type': type,
+      }).eq('id', id);
       await fetchBrands();
     } catch (e) {
       debugPrint('Error updating brand: $e');

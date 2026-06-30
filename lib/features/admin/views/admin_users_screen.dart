@@ -215,8 +215,8 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                           );
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Informasi pengguna berhasil diperbarui!'), backgroundColor: Colors.green),
-                            );
+  SnackBar(content: Text('Informasi pengguna berhasil diperbarui!'), backgroundColor: Colors.green),
+);
                           }
                         } else {
                           await viewModel.addUser(
@@ -229,15 +229,15 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                           );
                           if (mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Pengguna baru berhasil didaftarkan!'), backgroundColor: Colors.green),
-                            );
+  SnackBar(content: Text('Pengguna baru berhasil didaftarkan!'), backgroundColor: Colors.green),
+);
                           }
                         }
                       } catch (e) {
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Gagal menyimpan data: $e'), backgroundColor: Colors.red),
-                          );
+  SnackBar(content: Text('Gagal menyimpan data: $e'), backgroundColor: Colors.red),
+);
                         }
                       }
                     },
@@ -290,14 +290,14 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
         await context.read<AdminConfigViewModel>().deleteUser(user.id);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Pengguna berhasil dihapus secara permanen.'), backgroundColor: Colors.green),
-          );
+  SnackBar(content: Text('Pengguna berhasil dihapus secara permanen.'), backgroundColor: Colors.green),
+);
         }
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gagal menghapus pengguna: $e'), backgroundColor: Colors.red),
-          );
+  SnackBar(content: Text('Gagal menghapus pengguna: $e'), backgroundColor: Colors.red),
+);
         }
       }
     }

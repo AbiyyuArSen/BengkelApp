@@ -195,8 +195,8 @@ class _MekanikJourneyScreenState extends State<MekanikJourneyScreen> {
     if (phone == null || phone.isEmpty || phone == '-') {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Nomor telepon customer tidak tersedia')),
-        );
+  SnackBar(content: Text('Nomor telepon customer tidak tersedia'), backgroundColor: Colors.blue),
+);
       }
       return;
     }
@@ -211,15 +211,15 @@ class _MekanikJourneyScreenState extends State<MekanikJourneyScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Gagal membuka WhatsApp')),
-          );
+  SnackBar(content: Text('Gagal membuka WhatsApp'), backgroundColor: Colors.blue),
+);
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal membuka WhatsApp')),
-        );
+  SnackBar(content: Text('Gagal membuka WhatsApp'), backgroundColor: Colors.blue),
+);
       }
     }
   }
@@ -251,12 +251,8 @@ class _MekanikJourneyScreenState extends State<MekanikJourneyScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('OTW: Mekanik menuju lokasi ($currentStep/$totalSteps) 🏍️'),
-            duration: const Duration(milliseconds: 1500),
-            backgroundColor: Colors.purple,
-          ),
-        );
+  SnackBar(content: Text('OTW: Mekanik menuju lokasi ($currentStep/$totalSteps) 🏍️'), backgroundColor: Colors.blue),
+);
       }
     });
   }
@@ -271,15 +267,15 @@ class _MekanikJourneyScreenState extends State<MekanikJourneyScreen> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Gagal membuka Google Maps')),
-          );
+  SnackBar(content: Text('Gagal membuka Google Maps'), backgroundColor: Colors.blue),
+);
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal membuka Google Maps')),
-        );
+  SnackBar(content: Text('Gagal membuka Google Maps'), backgroundColor: Colors.blue),
+);
       }
     }
   }
@@ -296,17 +292,14 @@ class _MekanikJourneyScreenState extends State<MekanikJourneyScreen> {
       await _fetchRoute();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Perjalanan Dimulai! Status: Menuju Lokasi'),
-            backgroundColor: Colors.purple,
-          ),
-        );
+  SnackBar(content: Text('Perjalanan Dimulai! Status: Menuju Lokasi'), backgroundColor: Colors.blue),
+);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+);
       }
     } finally {
       setState(() => _isActionLoading = false);
@@ -319,18 +312,15 @@ class _MekanikJourneyScreenState extends State<MekanikJourneyScreen> {
       await vm.arriveAtLocation(widget.task.id);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Mekanik telah sampai di lokasi customer! ✅'),
-            backgroundColor: Colors.teal,
-          ),
-        );
+  SnackBar(content: Text('Mekanik telah sampai di lokasi customer! ✅'), backgroundColor: Colors.blue),
+);
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-        );
+  SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+);
       }
     } finally {
       setState(() => _isActionLoading = false);

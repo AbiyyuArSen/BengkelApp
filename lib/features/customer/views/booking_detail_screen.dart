@@ -277,8 +277,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                                 ),
                                 onPressed: () async {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Memverifikasi pembayaran...')),
-                                  );
+  SnackBar(content: Text('Memverifikasi pembayaran...'), backgroundColor: Colors.blue),
+);
                                   await context.read<CustomerBookingViewModel>().fetchBookings();
                                 },
                                 child: const Icon(Icons.refresh),
@@ -546,8 +546,8 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                                   ),
                                   onPressed: () async {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Memverifikasi pembayaran...')),
-                                    );
+  SnackBar(content: Text('Memverifikasi pembayaran...'), backgroundColor: Colors.blue),
+);
                                     await context.read<CustomerBookingViewModel>().fetchBookings();
                                   },
                                   child: const Icon(Icons.refresh),
@@ -666,17 +666,14 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                                     );
                                     if (mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Ulasan berhasil dikirim! Terima kasih. 🌟'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
+  SnackBar(content: Text('Ulasan berhasil dikirim! Terima kasih. 🌟'), backgroundColor: Colors.green),
+);
                                     }
                                   } catch (e) {
                                     if (mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Gagal mengirim ulasan: $e')),
-                                      );
+  SnackBar(content: Text('Gagal mengirim ulasan: $e'), backgroundColor: Colors.blue),
+);
                                     }
                                   } finally {
                                     if (mounted) setState(() => _isRatingSubmitting = false);

@@ -35,6 +35,9 @@ class BengkelDashboardViewModel extends ChangeNotifier {
   String? _rejectionReason;
   String? get rejectionReason => _rejectionReason;
 
+  String? _specialization;
+  String get specialization => _specialization ?? 'Mobil & Motor';
+
   double? _latitude;
   double? get latitude => _latitude;
 
@@ -42,7 +45,7 @@ class BengkelDashboardViewModel extends ChangeNotifier {
   double? get longitude => _longitude;
 
   double? _rating;
-  double get rating => _rating ?? 4.5;
+  double get rating => _rating ?? 0.0;
 
   int? _reviewsCount;
   int get reviewsCount => _reviewsCount ?? 0;
@@ -85,11 +88,20 @@ class BengkelDashboardViewModel extends ChangeNotifier {
           _bengkelAddress = data['address'];
           _description = data['description'];
           _operatingHours = data['operating_hours'];
+          
+          // specialization is stored as an array in DB
+          final specData = data['specialization'];
+          if (specData is List && specData.isNotEmpty) {
+            _specialization = specData.first.toString();
+          } else {
+            _specialization = specData?.toString();
+          }
+          
           _documentUrl = data['document_url'];
           _rejectionReason = data['rejection_reason'];
           _latitude = (data['latitude'] as num?)?.toDouble();
           _longitude = (data['longitude'] as num?)?.toDouble();
-          _rating = (data['rating'] as num?)?.toDouble() ?? 4.5;
+          _rating = (data['rating'] as num?)?.toDouble() ?? 0.0;
           _reviewsCount = (data['reviews_count'] as num?)?.toInt() ?? 0;
         }
       }
@@ -176,7 +188,7 @@ class BengkelDashboardViewModel extends ChangeNotifier {
         _rating = double.parse((totalScore / _reviewsList.length).toStringAsFixed(1));
         _reviewsCount = _reviewsList.length;
       } else {
-        _rating = 4.5;
+        _rating = 0.0;
         _reviewsCount = 0;
       }
       debugPrint('[BengkelReviews] Dynamic stats: rating=$_rating, count=$_reviewsCount');

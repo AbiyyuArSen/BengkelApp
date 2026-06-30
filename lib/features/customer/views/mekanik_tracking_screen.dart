@@ -115,11 +115,8 @@ class _MekanikTrackingScreenState extends State<MekanikTrackingScreen> {
           _timer?.cancel();
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Mekanik telah sampai di lokasi Anda! 🏍️'),
-                backgroundColor: Colors.green,
-              ),
-            );
+  SnackBar(content: Text('Mekanik telah sampai di lokasi Anda! 🏍️'), backgroundColor: Colors.green),
+);
             Navigator.pop(context);
           }
         }

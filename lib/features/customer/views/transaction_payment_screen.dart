@@ -123,33 +123,19 @@ class _TransactionPaymentScreenState extends State<TransactionPaymentScreen> {
               // Setelah pembayaran sukses, booking status tetap 'Pending' (Menunggu Konfirmasi/Menunggu Pembayaran Jasa)
               // Payment sync akan dilakukan otomatis saat fetchBookings() next time
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'),
-                  backgroundColor: Color(0xFF00C853),
-                  duration: Duration(seconds: 4),
-                ),
-              );
+  SnackBar(content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'), backgroundColor: Colors.blue),
+);
             } else if (paymentResult == MidtransPaymentResult.pending) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    '⏳ Pembayaran sedang diproses. Cek status di menu Booking.',
-                  ),
-                  backgroundColor: Color(0xFF1B3A5E),
-                  duration: Duration(seconds: 4),
-                ),
-              );
+  SnackBar(content: Text('⏳ Pembayaran sedang diproses. Cek status di menu Booking.',
+                  ), backgroundColor: Colors.blue),
+);
             } else {
               // Cancelled / failed — booking tetap unpaid
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text(
-                    'Booking tersimpan. Selesaikan pembayaran nanti dari halaman booking.',
-                  ),
-                  backgroundColor: Color(0xFF1B3A5E),
-                  duration: Duration(seconds: 4),
-                ),
-              );
+  SnackBar(content: Text('Booking tersimpan. Selesaikan pembayaran nanti dari halaman booking.',
+                  ), backgroundColor: Colors.blue),
+);
             }
 
             // Kembali ke Booking Detail / History

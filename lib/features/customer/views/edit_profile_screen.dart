@@ -95,15 +95,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Profil berhasil diperbarui!')),
-                          );
+  SnackBar(content: Text('Profil berhasil diperbarui!'), backgroundColor: Colors.blue),
+);
                           Navigator.pop(context);
                         }
                       } catch (e) {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Gagal memperbarui profil: $e')),
-                          );
+  SnackBar(content: Text('Gagal memperbarui profil: $e'), backgroundColor: Colors.blue),
+);
                         }
                       }
                     }

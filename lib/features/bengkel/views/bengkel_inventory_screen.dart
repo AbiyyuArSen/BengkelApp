@@ -112,6 +112,7 @@ class _BengkelInventoryScreenState extends State<BengkelInventoryScreen> {
       builder: (dialogCtx) => StatefulBuilder(
         builder: (statefulCtx, setDialogState) {
           final inventoryVM = statefulCtx.read<BengkelInventoryViewModel>();
+          final dashboardVM = statefulCtx.read<BengkelDashboardViewModel>();
           
           return AlertDialog(
             scrollable: true,
@@ -292,28 +293,58 @@ class _BengkelInventoryScreenState extends State<BengkelInventoryScreen> {
                 const SizedBox(height: 8),
                 inventoryVM.allBrands.isEmpty
                     ? const Text('Belum ada merek kendaraan terdaftar.', style: TextStyle(fontSize: 12, color: Colors.grey))
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: inventoryVM.allBrands.map((brand) {
-                          final isChecked = selectedBrandIds.contains(brand.id);
-                          return CheckboxListTile(
-                            title: Text(brand.name, style: const TextStyle(fontSize: 13)),
-                            value: isChecked,
-                            dense: true,
-                            enabled: !isSaving,
-                            controlAffinity: ListTileControlAffinity.leading,
-                            onChanged: (bool? val) {
-                              setDialogState(() {
-                                if (val == true) {
-                                  selectedBrandIds.add(brand.id);
-                                } else {
-                                  selectedBrandIds.remove(brand.id);
-                                }
-                              });
-                            },
+                    : Builder(
+                        builder: (ctx) {
+                          final spec = dashboardVM.specialization.toLowerCase();
+                          final bool showMotor = spec.contains('motor') || spec.contains('keduanya');
+                          final bool showMobil = spec.contains('mobil') || spec.contains('keduanya');
+                          
+                          final bothBrands = inventoryVM.allBrands.where((b) => b.type.toLowerCase() == 'keduanya').toList();
+                          final motorBrands = inventoryVM.allBrands.where((b) => b.type.toLowerCase() == 'motor').toList();
+                          final mobilBrands = inventoryVM.allBrands.where((b) => b.type.toLowerCase() == 'mobil').toList();
+                          
+                          Widget buildBrandGroup(String title, List<VehicleBrandModel> brands) {
+                            if (brands.isEmpty) return const SizedBox();
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  child: Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey)),
+                                ),
+                                ...brands.map((brand) {
+                                  final isChecked = selectedBrandIds.contains(brand.id);
+                                  return CheckboxListTile(
+                                    title: Text(brand.name, style: const TextStyle(fontSize: 13)),
+                                    value: isChecked,
+                                    dense: true,
+                                    enabled: !isSaving,
+                                    controlAffinity: ListTileControlAffinity.leading,
+                                    onChanged: (bool? val) {
+                                      setDialogState(() {
+                                        if (val == true) {
+                                          selectedBrandIds.add(brand.id);
+                                        } else {
+                                          selectedBrandIds.remove(brand.id);
+                                        }
+                                      });
+                                    },
+                                  );
+                                }),
+                              ],
+                            );
+                          }
+                          
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              buildBrandGroup('KEDUANYA (UMUM)', bothBrands),
+                              if (showMotor) buildBrandGroup('MOTOR', motorBrands),
+                              if (showMobil) buildBrandGroup('MOBIL', mobilBrands),
+                            ],
                           );
-                        }).toList(),
-                      ),
+                        }
+                      )
               ],
             ),
             actions: [
@@ -507,60 +538,6 @@ class _BengkelInventoryScreenState extends State<BengkelInventoryScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Dark Header block
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              decoration: const BoxDecoration(
-                color: Color(0xFF0F1E2C),
-              ),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: const Color(0xFF1B5A90),
-                    child: const Text(
-                      'B',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          dashboardVM.bengkelName.isNotEmpty ? dashboardVM.bengkelName : 'Bengkel Jaya Motor',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Mitra Terverifikasi ✓',
-                          style: TextStyle(
-                            color: Color(0xFF5ED3A6),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.logout, color: Colors.white70),
-                    onPressed: () => _handleLogout(context),
-                  ),
-                ],
-              ),
-            ),
             // Title, Search, Filters & Alert
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),

@@ -744,7 +744,7 @@ class _BengkelCard extends StatelessWidget {
     final name = bengkel['name'] as String? ?? 'Bengkel';
     final address = bengkel['address'] as String? ?? '-';
     final imageUrl = bengkel['image_url'] as String? ?? '';
-    final rating = (bengkel['rating'] as num?)?.toDouble() ?? 4.5;
+    final rating = (bengkel['rating'] as num?)?.toDouble() ?? 0.0;
     final reviewsCount = (bengkel['reviews_count'] as num?)?.toInt() ?? 0;
     final distance = (bengkel['distance_km'] ?? bengkel['distance'] as num?)?.toDouble() ?? 0.0;
     final specialization = List<String>.from(bengkel['specialization'] as List? ?? []);

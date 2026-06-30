@@ -242,24 +242,14 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                               await context.read<CustomerProfileViewModel>().deleteVehicle(vehicle.id);
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Kendaraan berhasil dihapus'),
-                                    backgroundColor: Colors.green.shade600,
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
-                                );
+  SnackBar(content: Text('Kendaraan berhasil dihapus'), backgroundColor: Colors.green),
+);
                               }
                             } catch (e) {
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Gagal menghapus: $e'),
-                                    backgroundColor: Colors.red,
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
-                                );
+  SnackBar(content: Text('Gagal menghapus: $e'), backgroundColor: Colors.red),
+);
                               }
                             }
                           }

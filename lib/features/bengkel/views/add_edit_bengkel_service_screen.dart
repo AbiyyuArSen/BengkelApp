@@ -40,7 +40,9 @@ class _AddEditBengkelServiceScreenState extends State<AddEditBengkelServiceScree
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedCategoryId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pilih kategori layanan terlebih dahulu')));
+      ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Pilih kategori layanan terlebih dahulu'), backgroundColor: Colors.blue),
+);
       return;
     }
 
@@ -58,7 +60,9 @@ class _AddEditBengkelServiceScreenState extends State<AddEditBengkelServiceScree
           duration: '',
         );
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Layanan berhasil ditambahkan!')));
+          ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Layanan berhasil ditambahkan!'), backgroundColor: Colors.blue),
+);
         }
       } else {
         // Edit
@@ -70,13 +74,17 @@ class _AddEditBengkelServiceScreenState extends State<AddEditBengkelServiceScree
           duration: '',
         );
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Layanan berhasil diperbarui!')));
+          ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Layanan berhasil diperbarui!'), backgroundColor: Colors.blue),
+);
         }
       }
       if (mounted) Navigator.pop(context);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Gagal menyimpan: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+  SnackBar(content: Text('Gagal menyimpan: $e'), backgroundColor: Colors.blue),
+);
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
