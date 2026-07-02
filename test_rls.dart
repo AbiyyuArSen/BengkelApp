@@ -9,11 +9,14 @@ void main() async {
   );
   
   final client = Supabase.instance.client;
-  await client.auth.signOut();
   
   try {
-    final res = await client.from('users').select().limit(1);
-    print('SUCCESS: $res');
+    final res = await client.from('bengkels').select().limit(1);
+    if (res.isNotEmpty) {
+       print('SUCCESS. Keys: ${res[0].keys}');
+    } else {
+       print('SUCCESS but table is empty');
+    }
   } catch (e) {
     print('ERROR: $e');
   }

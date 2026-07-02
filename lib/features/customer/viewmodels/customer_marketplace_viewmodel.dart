@@ -6,14 +6,14 @@ import '../../bengkel/models/sparepart_model.dart';
 import '../../admin/models/vehicle_brand_model.dart';
 import '../models/vehicle_model.dart';
 import '../models/order_model.dart';
+import '../../../core/constants/app_constants.dart';
 
 class CustomerMarketplaceViewModel extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
 
   // --- Midtrans config (dipakai untuk verifikasi status pembayaran) ---
   // HARUS sama dengan yang ada di PaymentScreen.
-  static const String _midtransServerKey = 'YOUR_SERVER_KEY';
-  static const bool _isSandboxMode = true;
+  static const String _midtransServerKey = AppConstants.midtransServerKey;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -739,9 +739,7 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
   /// Return transaction_status string (mis. 'settlement', 'pending', 'expire').
   Future<String?> _getMidtransTransactionStatus(String midtransOrderId) async {
     try {
-      final base = _isSandboxMode
-          ? 'https://api.sandbox.midtrans.com'
-          : 'https://api.midtrans.com';
+      final base = 'https://api.midtrans.com';
       final url = '$base/v2/$midtransOrderId/status';
       final basicAuth =
           'Basic ${base64Encode(utf8.encode('$_midtransServerKey:'))}';

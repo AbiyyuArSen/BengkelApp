@@ -5,11 +5,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import '../models/booking_model.dart';
 
+import '../../../core/constants/app_constants.dart';
+
 class CustomerBookingViewModel extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  static const String _midtransServerKey = 'YOUR_SERVER_KEY';
-  static const bool _isSandboxMode = true;
+  static const String _midtransServerKey = AppConstants.midtransServerKey;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -304,9 +305,7 @@ class CustomerBookingViewModel extends ChangeNotifier {
     List<String>? enabledPayments,
   }) async {
     final String serverKey = _midtransServerKey;
-    final url = _isSandboxMode
-        ? 'https://app.sandbox.midtrans.com/snap/v1/transactions'
-        : 'https://app.midtrans.com/snap/v1/transactions';
+    final url = 'https://app.midtrans.com/snap/v1/transactions';
 
     // Midtrans menolak gross_amount = 0. Pastikan minimal 1.
     // gross_amount juga tidak boleh melebihi 10 digit.
@@ -391,9 +390,7 @@ class CustomerBookingViewModel extends ChangeNotifier {
 
   Future<String?> _getMidtransTransactionStatus(String midtransOrderId) async {
     try {
-      final base = _isSandboxMode
-          ? 'https://api.sandbox.midtrans.com'
-          : 'https://api.midtrans.com';
+      final base = 'https://api.midtrans.com';
       final url = '$base/v2/$midtransOrderId/status';
       final basicAuth = 'Basic ${base64Encode(utf8.encode('$_midtransServerKey:'))}';
 
