@@ -33,7 +33,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   // --- Midtrans Environment & API Key Configuration ---
   // PENTING: Untuk menggunakan Sandbox, masukkan Sandbox Server Key Anda (selalu berawalan 'SB-Mid-server-').
   // Jika menggunakan Production, masukkan Production Server Key (selalu berawalan 'Mid-server-').
-  static const String _midtransServerKey = AppConstants.midtransServerKey;
+  static const String _midtransServerKey = 'YOUR_SERVER_KEY';
+  static const bool _isSandboxMode = true;
 
   String _selectedMethod = 'gopay'; // Default selection
   String _selectedBank =

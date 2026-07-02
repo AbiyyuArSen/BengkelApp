@@ -10,7 +10,8 @@ import '../../../core/constants/app_constants.dart';
 class CustomerBookingViewModel extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  static const String _midtransServerKey = AppConstants.midtransServerKey;
+  static const String _midtransServerKey = 'YOUR_SERVER_KEY';
+  static const bool _isSandboxMode = true;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
