@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../bengkel/models/sparepart_model.dart';
 import '../viewmodels/customer_marketplace_viewmodel.dart';
 import '../viewmodels/customer_dashboard_viewmodel.dart';
@@ -34,7 +33,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   // PENTING: Untuk menggunakan Sandbox, masukkan Sandbox Server Key Anda (selalu berawalan 'SB-Mid-server-').
   // Jika menggunakan Production, masukkan Production Server Key (selalu berawalan 'Mid-server-').
   static const String _midtransServerKey = 'YOUR_SERVER_KEY';
-  static const bool _isSandboxMode = true;
 
   String _selectedMethod = 'gopay'; // Default selection
   String _selectedBank =

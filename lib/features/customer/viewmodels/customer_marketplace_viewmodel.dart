@@ -6,7 +6,6 @@ import '../../bengkel/models/sparepart_model.dart';
 import '../../admin/models/vehicle_brand_model.dart';
 import '../models/vehicle_model.dart';
 import '../models/order_model.dart';
-import '../../../core/constants/app_constants.dart';
 
 class CustomerMarketplaceViewModel extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -14,7 +13,6 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
   // --- Midtrans config (dipakai untuk verifikasi status pembayaran) ---
   // HARUS sama dengan yang ada di PaymentScreen.
   static const String _midtransServerKey = 'YOUR_SERVER_KEY';
-  static const bool _isSandboxMode = true;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
