@@ -64,7 +64,7 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
 
             return Scaffold(
               backgroundColor: AppColors.background,
-              appBar: _buildAppBar(context, bengkelName, isVerified),
+              appBar: _buildAppBar(context, bengkelName, isVerified, bengkelViewModel.profilePhotoUrl),
               body: isVerified
                   ? _buildVerifiedDashboard(bengkelViewModel, ordersViewModel)
                   : _buildUnverifiedDashboard(
@@ -84,6 +84,7 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
     BuildContext context,
     String bengkelName,
     bool isVerified,
+    String? photoUrl,
   ) {
     final nameInitial = bengkelName.isNotEmpty
         ? bengkelName[0].toUpperCase()
@@ -98,24 +99,32 @@ class _BengkelDashboardScreenState extends State<BengkelDashboardScreen> {
         child: Container(
           width: 40,
           height: 40,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
               colors: [Color(0xFFF2B300), Color(0xFFFF8C00)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             shape: BoxShape.circle,
+            image: photoUrl != null && photoUrl.isNotEmpty
+                ? DecorationImage(
+                    image: NetworkImage(photoUrl),
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
-          child: Center(
-            child: Text(
-              nameInitial,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ),
+          child: (photoUrl == null || photoUrl.isEmpty)
+              ? Center(
+                  child: Text(
+                    nameInitial,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                )
+              : null,
         ),
       ),
       title: Padding(

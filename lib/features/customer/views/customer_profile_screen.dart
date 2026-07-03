@@ -10,7 +10,7 @@ import 'edit_profile_screen.dart';
 import 'saved_addresses_screen.dart';
 import 'edit_vehicle_screen.dart';
 import 'order_history_screen.dart';
-
+import 'privacy_security_screen.dart';
 class CustomerProfileScreen extends StatefulWidget {
   const CustomerProfileScreen({super.key});
 
@@ -395,17 +395,17 @@ class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
                             ),
                             const Divider(height: 1, indent: 60, endIndent: 16),
                             _buildMenuItem(
-                              icon: Icons.notifications_none_outlined,
-                              title: 'Notifications',
-                              iconColor: const Color(0xFF1E2843),
-                              onTap: () {},
-                            ),
-                            const Divider(height: 1, indent: 60, endIndent: 16),
-                            _buildMenuItem(
                               icon: Icons.shield_outlined,
                               title: 'Privacy & Security',
                               iconColor: const Color(0xFF1E2843),
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const PrivacySecurityScreen(),
+                                  ),
+                                );
+                              },
                             ),
                             const Divider(height: 1, indent: 60, endIndent: 16),
                             _buildMenuItem(

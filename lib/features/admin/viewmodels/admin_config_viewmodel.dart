@@ -105,10 +105,26 @@ class AdminConfigViewModel extends ChangeNotifier {
       final bookingsRes = await _supabase.from('bookings').select('status, bengkel_id, bengkels(name, rating)');
       final List<dynamic> bookings = bookingsRes;
       
-      _completedOrders = bookings.where((b) => b['status'] == 'completed' || b['status'] == 'selesai').length;
-      _inProgressOrders = bookings.where((b) => b['status'] == 'in_progress' || b['status'] == 'accepted' || b['status'] == 'diproses' || b['status'] == 'diterima').length;
-      _pendingOrders = bookings.where((b) => b['status'] == 'pending' || b['status'] == 'menunggu').length;
-      _cancelledOrders = bookings.where((b) => b['status'] == 'cancelled' || b['status'] == 'rejected' || b['status'] == 'dibatalkan' || b['status'] == 'ditolak').length;
+      // Fetch orders
+      final List<dynamic> orders = [];
+      try {
+        final ordersRes = await _supabase.from('orders').select('status');
+        orders.addAll(ordersRes);
+      } catch (e) {
+        debugPrint('Orders table might not exist or error: $e');
+      }
+      
+      _completedOrders = bookings.where((b) => b['status'] == 'completed' || b['status'] == 'selesai').length + 
+                         orders.where((o) => o['status'] == 'completed' || o['status'] == 'selesai' || o['status'] == 'delivered').length;
+      
+      _inProgressOrders = bookings.where((b) => b['status'] == 'in_progress' || b['status'] == 'accepted' || b['status'] == 'diproses' || b['status'] == 'diterima').length + 
+                          orders.where((o) => o['status'] == 'processing' || o['status'] == 'shipped' || o['status'] == 'diproses' || o['status'] == 'dikirim').length;
+      
+      _pendingOrders = bookings.where((b) => b['status'] == 'pending' || b['status'] == 'menunggu' || b['status'] == 'unpaid').length + 
+                       orders.where((o) => o['status'] == 'pending' || o['status'] == 'unpaid' || o['status'] == 'menunggu').length;
+      
+      _cancelledOrders = bookings.where((b) => b['status'] == 'cancelled' || b['status'] == 'rejected' || b['status'] == 'dibatalkan' || b['status'] == 'ditolak').length + 
+                         orders.where((o) => o['status'] == 'cancelled' || o['status'] == 'dibatalkan').length;
 
       // Group bookings by bengkel
       Map<String, int> bengkelBookingCount = {};
@@ -141,7 +157,7 @@ class AdminConfigViewModel extends ChangeNotifier {
       }).toList();
 
       // Calculate cancellation rate
-      int totalOrders = bookings.length;
+      int totalOrders = bookings.length + orders.length;
       if (totalOrders > 0) {
         _cancellationRate = (_cancelledOrders / totalOrders) * 100;
       } else {
@@ -154,6 +170,12 @@ class AdminConfigViewModel extends ChangeNotifier {
         _supabase.from('bengkels').select('id, name, created_at, status').order('created_at', ascending: false).limit(3),
         _supabase.from('bookings').select('id, created_at, status, bengkels(name)').order('created_at', ascending: false).limit(3),
       ]);
+      
+      List<dynamic> recentOrders = [];
+      try {
+        final res = await _supabase.from('orders').select('id, created_at, status').order('created_at', ascending: false).limit(3);
+        recentOrders = res;
+      } catch (e) {}
 
       List<Map<String, dynamic>> combinedActivities = [];
 
@@ -186,9 +208,19 @@ class AdminConfigViewModel extends ChangeNotifier {
         String bName = bk['bengkels'] != null ? bk['bengkels']['name'] : 'bengkel';
         combinedActivities.add({
           'type': 'booking',
-          'title': 'Pesanan Baru',
+          'title': 'Pesanan Servis Baru',
           'subtitle': 'Pesanan masuk ke $bName',
           'created_at': DateTime.tryParse(bk['created_at'].toString()) ?? DateTime.now(),
+        });
+      }
+
+      // Process Orders
+      for (var o in recentOrders) {
+        combinedActivities.add({
+          'type': 'order',
+          'title': 'Pembelian Sparepart',
+          'subtitle': 'Pesanan marketplace baru',
+          'created_at': DateTime.tryParse(o['created_at'].toString()) ?? DateTime.now(),
         });
       }
 

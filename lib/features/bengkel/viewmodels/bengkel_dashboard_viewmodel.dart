@@ -32,6 +32,9 @@ class BengkelDashboardViewModel extends ChangeNotifier {
   String? _documentUrl;
   String? get documentUrl => _documentUrl;
 
+  String? _profilePhotoUrl;
+  String? get profilePhotoUrl => _profilePhotoUrl;
+
   String? _rejectionReason;
   String? get rejectionReason => _rejectionReason;
 
@@ -94,11 +97,13 @@ class BengkelDashboardViewModel extends ChangeNotifier {
           if (specData is List && specData.isNotEmpty) {
             _specialization = specData.first.toString();
           } else {
-            _specialization = specData?.toString();
-          }
-          
-          _documentUrl = data['document_url'];
-          _rejectionReason = data['rejection_reason'];
+          _specialization = specData?.toString();
+        }
+        
+        _documentUrl = data['document_url'];
+        _profilePhotoUrl = data['profile_photo_url'];
+        
+        _rejectionReason = data['rejection_reason'];
           _latitude = (data['latitude'] as num?)?.toDouble();
           _longitude = (data['longitude'] as num?)?.toDouble();
           _rating = (data['rating'] as num?)?.toDouble() ?? 0.0;
@@ -353,6 +358,47 @@ class BengkelDashboardViewModel extends ChangeNotifier {
       debugPrint('Update tabel bengkels berhasil');
     } catch (e) {
       debugPrint('Error uploadDocument: $e');
+      rethrow;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> uploadProfilePhoto(
+    Uint8List fileBytes,
+    String fileName,
+  ) async {
+    setLoading(true);
+    try {
+      final id = _supabase.auth.currentUser?.id;
+      if (id == null) {
+        throw Exception('User tidak ditemukan, silakan login ulang.');
+      }
+
+      final fileExt = fileName.split('.').last;
+      final filePath = '$id/profile_photo-${DateTime.now().millisecondsSinceEpoch}.$fileExt';
+
+      await _supabase.storage
+          .from('bengkel_profiles')
+          .uploadBinary(
+            filePath,
+            fileBytes,
+            fileOptions: const FileOptions(upsert: true),
+          );
+
+      final publicUrl = _supabase.storage
+          .from('bengkel_profiles')
+          .getPublicUrl(filePath);
+
+      await _supabase
+          .from('bengkels')
+          .update({'profile_photo_url': publicUrl})
+          .eq('owner_id', id);
+
+      _profilePhotoUrl = publicUrl;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error uploadProfilePhoto: $e');
       rethrow;
     } finally {
       setLoading(false);

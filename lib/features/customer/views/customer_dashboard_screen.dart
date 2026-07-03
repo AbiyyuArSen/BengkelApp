@@ -15,7 +15,8 @@ import 'workshop_detail_screen.dart';
 import 'emergency_sos_screen.dart';
 import 'booking_service_screen.dart';
 import '../viewmodels/customer_booking_viewmodel.dart';
-
+import '../viewmodels/customer_marketplace_viewmodel.dart';
+import 'package:intl/intl.dart';
 class CustomerDashboardScreen extends StatefulWidget {
   const CustomerDashboardScreen({super.key});
 
@@ -654,7 +655,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                 const SizedBox(height: 24),
 
                 // [NEW] Sparepart Recommendations
-                _buildSparepartRecommendations(),
+                _buildSparepartRecommendations(context),
                 const SizedBox(height: 24),
 
                 // Frequently Visited Workshops Section
@@ -719,9 +720,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                       children: [
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(12),
-                                          child: b['image_url'] != null && b['image_url'].toString().isNotEmpty
+                                          child: (b['profile_photo_url'] ?? b['image_url']) != null && (b['profile_photo_url'] ?? b['image_url']).toString().isNotEmpty
                                               ? Image.network(
-                                                  b['image_url'] as String,
+                                                  (b['profile_photo_url'] ?? b['image_url']) as String,
                                                   width: 50,
                                                   height: 50,
                                                   fit: BoxFit.cover,
@@ -885,7 +886,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                                   );
                                 },
                                 child: _buildWorkshopCard(
-                                  imageUrl: b['image_url'] as String? ?? '',
+                                  imageUrl: b['profile_photo_url'] as String? ?? b['image_url'] as String? ?? '',
                                   name: b['name'] as String? ?? 'Bengkel',
                                   rating: (b['rating'] as num?)?.toDouble() ?? 0.0,
                                   reviewsCount: (b['reviews_count'] as num?)?.toInt() ?? 0,
@@ -1245,7 +1246,29 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
     );
   }
 
-  Widget _buildSparepartRecommendations() {
+  Widget _buildSparepartRecommendations(BuildContext context) {
+    final marketplaceViewModel = context.watch<CustomerMarketplaceViewModel>();
+    final spareparts = marketplaceViewModel.spareparts;
+    final currencyFormatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    );
+
+    if (marketplaceViewModel.isLoading && spareparts.isEmpty) {
+      return const SizedBox(
+        height: 180,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (spareparts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Sort by rating or just take first 5
+    final displayItems = spareparts.take(5).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1262,12 +1285,22 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   color: AppColors.textPrimary,
                 ),
               ),
-              Text(
-                'Lihat Semua',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CustomerMainScreen(initialIndex: 1),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Lihat Semua',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ],
@@ -1278,8 +1311,9 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: 3,
+            itemCount: displayItems.length,
             itemBuilder: (context, index) {
+              final item = displayItems[index];
               return Container(
                 width: 140,
                 margin: const EdgeInsets.symmetric(horizontal: 6),
@@ -1299,12 +1333,21 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                   children: [
                     Container(
                       height: 100,
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                       ),
-                      child: const Center(
-                        child: Icon(Icons.inventory_2_outlined, color: Colors.grey, size: 40),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                            ? Image.network(
+                                item.imageUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.inventory_2_outlined, color: Colors.grey, size: 40),
+                              )
+                            : const Icon(Icons.inventory_2_outlined, color: Colors.grey, size: 40),
                       ),
                     ),
                     Padding(
@@ -1312,11 +1355,11 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Oli Motul 5100',
+                          Text(
+                            item.name,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
                               color: AppColors.textPrimary,
@@ -1324,7 +1367,7 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Rp 120.000',
+                            currencyFormatter.format(item.price),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,

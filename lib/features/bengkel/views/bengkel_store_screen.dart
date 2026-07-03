@@ -47,24 +47,32 @@ class _BengkelStoreScreenState extends State<BengkelStoreScreen>
           child: Container(
             width: 38,
             height: 38,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
                 colors: [Color(0xFFF2B300), Color(0xFFFF8C00)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               shape: BoxShape.circle,
+              image: dashboardVM.profilePhotoUrl != null && dashboardVM.profilePhotoUrl!.isNotEmpty
+                  ? DecorationImage(
+                      image: NetworkImage(dashboardVM.profilePhotoUrl!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ),
-            child: Center(
-              child: Text(
-                bengkelName.isNotEmpty ? bengkelName[0].toUpperCase() : 'B',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ),
+            child: (dashboardVM.profilePhotoUrl == null || dashboardVM.profilePhotoUrl!.isEmpty)
+                ? Center(
+                    child: Text(
+                      bengkelName.isNotEmpty ? bengkelName[0].toUpperCase() : 'B',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+                : null,
           ),
         ),
         title: Padding(

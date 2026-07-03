@@ -69,7 +69,7 @@ class _WorkshopDetailScreenState extends State<WorkshopDetailScreen> {
   Widget build(BuildContext context) {
     final name = widget.bengkel['name'] as String? ?? 'Bengkel';
     final address = widget.bengkel['address'] as String? ?? '-';
-    final imageUrl = widget.bengkel['image_url'] as String?;
+    final imageUrl = widget.bengkel['profile_photo_url'] as String? ?? widget.bengkel['image_url'] as String?;
     final opHours = widget.bengkel['operating_hours'] as String? ?? '07:00-21:00';
     final phone = widget.bengkel['phone'] as String?;
 

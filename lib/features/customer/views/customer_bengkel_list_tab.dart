@@ -228,7 +228,7 @@ class _CustomerBengkelListTabState extends State<CustomerBengkelListTab> {
                               );
                             },
                             child: _buildWorkshopCard(
-                              imageUrl: b['image_url'] as String? ?? '',
+                              imageUrl: b['profile_photo_url'] as String? ?? b['image_url'] as String? ?? '',
                               name: b['name'] as String? ?? 'Bengkel',
                               rating: (b['rating'] as num?)?.toDouble() ?? 0.0,
                               reviewsCount: (b['reviews_count'] as num?)?.toInt() ?? 0,

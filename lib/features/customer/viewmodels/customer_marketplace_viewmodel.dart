@@ -12,7 +12,8 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
 
   // --- Midtrans config (dipakai untuk verifikasi status pembayaran) ---
   // HARUS sama dengan yang ada di PaymentScreen.
-  static const String _midtransServerKey = 'YOUR_SERVER_KEY';
+  static const String _midtransServerKey =
+      '[YOUR_MIDTRANS_SERVER_KEY]';
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -136,7 +137,7 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
           .select('*, bengkels(*), sparepart_compatibilities(vehicle_brand_id)')
           .order('created_at', ascending: false);
       final List<dynamic> sparepartsData = sparepartsRes;
-      
+
       // Filter out spare parts from suspended or unverified workshops
       final List<dynamic> activeSparepartsData = sparepartsData.where((e) {
         final bengkelsJson = e['bengkels'];
@@ -198,15 +199,19 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
       final String activeType = vehicle.type.toLowerCase();
       bool typeMatch = false;
       if (activeType == 'mobil') {
-        typeMatch = spec.any((s) =>
-            s.toLowerCase().contains('mobil') ||
-            s.toLowerCase().contains('motor & mobil') ||
-            s.toLowerCase().contains('mobil & motor'));
+        typeMatch = spec.any(
+          (s) =>
+              s.toLowerCase().contains('mobil') ||
+              s.toLowerCase().contains('motor & mobil') ||
+              s.toLowerCase().contains('mobil & motor'),
+        );
       } else if (activeType == 'motor') {
-        typeMatch = spec.any((s) =>
-            s.toLowerCase().contains('motor') ||
-            s.toLowerCase().contains('motor & mobil') ||
-            s.toLowerCase().contains('mobil & motor'));
+        typeMatch = spec.any(
+          (s) =>
+              s.toLowerCase().contains('motor') ||
+              s.toLowerCase().contains('motor & mobil') ||
+              s.toLowerCase().contains('mobil & motor'),
+        );
       } else {
         typeMatch = true;
       }
@@ -738,7 +743,7 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
   /// Return transaction_status string (mis. 'settlement', 'pending', 'expire').
   Future<String?> _getMidtransTransactionStatus(String midtransOrderId) async {
     try {
-      final base = 'https://api.midtrans.com';
+      final base = 'https://api.sandbox.midtrans.com';
       final url = '$base/v2/$midtransOrderId/status';
       final basicAuth =
           'Basic ${base64Encode(utf8.encode('$_midtransServerKey:'))}';
@@ -814,17 +819,21 @@ class CustomerMarketplaceViewModel extends ChangeNotifier {
     try {
       // 1. Coba verifikasi dulu ke Midtrans API
       final midtransStatus = await _getMidtransTransactionStatus(orderId);
-      final isPaid = midtransStatus == 'settlement' ||
+      final isPaid =
+          midtransStatus == 'settlement' ||
           midtransStatus == 'capture' ||
-          midtransStatus == null; // null = tidak bisa cek, percayai callback WebView
+          midtransStatus ==
+              null; // null = tidak bisa cek, percayai callback WebView
 
       if (isPaid) {
         // Status tetap 'Pending' — menunggu konfirmasi bengkel
-        await _supabase.from('orders').update({
-          'payment_status': 'paid',
-          'status': 'Pending',
-        }).eq('id', orderId);
-        debugPrint('[Payment] Order $orderId marked as PAID via WebView callback — status Pending (waiting bengkel confirmation)');
+        await _supabase
+            .from('orders')
+            .update({'payment_status': 'paid', 'status': 'Pending'})
+            .eq('id', orderId);
+        debugPrint(
+          '[Payment] Order $orderId marked as PAID via WebView callback — status Pending (waiting bengkel confirmation)',
+        );
 
         // Update local state
         final idx = _orders.indexWhere((o) => o.id == orderId);

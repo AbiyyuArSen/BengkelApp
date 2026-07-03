@@ -9,6 +9,7 @@ import '../../auth/viewmodels/auth_viewmodel.dart';
 import '../../auth/views/login_screen.dart';
 import '../viewmodels/bengkel_dashboard_viewmodel.dart';
 import 'bengkel_service_list_screen.dart';
+import 'package:file_picker/file_picker.dart';
 
 class BengkelProfileScreen extends StatefulWidget {
   const BengkelProfileScreen({super.key});
@@ -679,25 +680,73 @@ class _BengkelProfileScreenState extends State<BengkelProfileScreen> {
       ),
       child: Row(
         children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF1B3A5E), Color(0xFF2E5C91)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              initial,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 28,
-              ),
+          GestureDetector(
+            onTap: () async {
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.image,
+                withData: true,
+              );
+              if (result != null && result.files.single.bytes != null && mounted) {
+                try {
+                  await vm.uploadProfilePhoto(
+                    result.files.single.bytes!, 
+                    result.files.single.name,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Foto profil berhasil diperbarui!'), backgroundColor: Colors.green),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Gagal mengunggah foto: $e'), backgroundColor: Colors.red),
+                  );
+                }
+              }
+            },
+            child: Stack(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1B3A5E), Color(0xFF2E5C91)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    image: vm.profilePhotoUrl != null && vm.profilePhotoUrl!.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(vm.profilePhotoUrl!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  alignment: Alignment.center,
+                  child: (vm.profilePhotoUrl == null || vm.profilePhotoUrl!.isEmpty)
+                      ? Text(
+                          initial,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 28,
+                          ),
+                        )
+                      : null,
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF2B300),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1.5),
+                    ),
+                    child: const Icon(Icons.camera_alt, size: 12, color: Colors.white),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(width: 16),

@@ -32,7 +32,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   // --- Midtrans Environment & API Key Configuration ---
   // PENTING: Untuk menggunakan Sandbox, masukkan Sandbox Server Key Anda (selalu berawalan 'SB-Mid-server-').
   // Jika menggunakan Production, masukkan Production Server Key (selalu berawalan 'Mid-server-').
-  static const String _midtransServerKey = 'YOUR_SERVER_KEY';
+  static const String _midtransServerKey =
+      '[YOUR_MIDTRANS_SERVER_KEY]';
 
   String _selectedMethod = 'gopay'; // Default selection
   String _selectedBank =
@@ -229,7 +230,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     AuthViewModel authViewModel,
   ) async {
     final String serverKey = _midtransServerKey;
-    final url = 'https://app.midtrans.com/snap/v1/transactions';
+    final url = 'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
     final basicAuth = 'Basic ${base64Encode(utf8.encode('$serverKey:'))}';
     final user = authViewModel.currentUser;
@@ -241,10 +242,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final String firstName = _isPickup
         ? 'Customer'
         : (_recipientName != null && _recipientName!.isNotEmpty
-            ? _recipientName!
-            : (user != null && (user.name?.isNotEmpty ?? false) ? user.name! : 'Customer'));
-    final String email =
-        user != null && (user.email?.isNotEmpty ?? false) ? user.email! : 'customer@bengkelin.com';
+              ? _recipientName!
+              : (user != null && (user.name?.isNotEmpty ?? false)
+                    ? user.name!
+                    : 'Customer'));
+    final String email = user != null && (user.email?.isNotEmpty ?? false)
+        ? user.email!
+        : 'customer@bengkelin.com';
     final String? phone = _isPickup ? null : (_recipientPhone ?? user?.phone);
 
     final Map<String, dynamic> customerDetails = {
@@ -256,19 +260,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
 
     final Map<String, dynamic> body = {
-      'transaction_details': {
-        'order_id': orderId,
-        'gross_amount': grossAmount,
-      },
+      'transaction_details': {'order_id': orderId, 'gross_amount': grossAmount},
       'credit_card': {'secure': true},
       'enabled_payments': _getEnabledPayments(),
       'customer_details': customerDetails,
       'expiry': {'unit': 'minute', 'duration': 1440},
       // Callbacks: setelah bayar, Midtrans Snap redirect ke URL ini.
       // MidtransSnapScreen memonitor URL ini untuk auto-close WebView.
-      'callbacks': {
-        'finish': 'bengkelin://payment/finish',
-      },
+      'callbacks': {'finish': 'bengkelin://payment/finish'},
     };
 
     debugPrint('[Midtrans] POST $url');
@@ -370,8 +369,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
         paymentUrl: redirectUrl,
         midtransOrderId: orderId,
         paymentExpiry: paymentExpiry,
-        latitude: _isPickup ? null : (_selectedLat ?? dashboardViewModel.userLat),
-        longitude: _isPickup ? null : (_selectedLng ?? dashboardViewModel.userLng),
+        latitude: _isPickup
+            ? null
+            : (_selectedLat ?? dashboardViewModel.userLat),
+        longitude: _isPickup
+            ? null
+            : (_selectedLng ?? dashboardViewModel.userLng),
       );
 
       if (mounted) {
@@ -385,10 +388,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
         paymentResult = await Navigator.push<MidtransPaymentResult>(
           context,
           MaterialPageRoute(
-            builder: (_) => MidtransSnapScreen(
-              snapUrl: redirectUrl,
-              orderId: orderId,
-            ),
+            builder: (_) =>
+                MidtransSnapScreen(snapUrl: redirectUrl, orderId: orderId),
           ),
         );
       }
@@ -400,19 +401,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
           await viewModel.verifyAndUpdateOrderPayment(orderId);
 
           ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(content: Text('✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.'), backgroundColor: Colors.blue),
-);
+            SnackBar(
+              content: Text(
+                '✅ Pembayaran berhasil! Menunggu konfirmasi bengkel.',
+              ),
+              backgroundColor: Colors.blue,
+            ),
+          );
         } else if (paymentResult == MidtransPaymentResult.pending) {
           ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(content: Text('⏳ Pembayaran sedang diproses. Cek status di menu Pesanan.',
-              ), backgroundColor: Colors.blue),
-);
+            SnackBar(
+              content: Text(
+                '⏳ Pembayaran sedang diproses. Cek status di menu Pesanan.',
+              ),
+              backgroundColor: Colors.blue,
+            ),
+          );
         } else {
           // Cancelled / failed — tetap simpan order sbg unpaid
           ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(content: Text('Order tersimpan. Selesaikan pembayaran lewat menu Pesanan.',
-              ), backgroundColor: Colors.blue),
-);
+            SnackBar(
+              content: Text(
+                'Order tersimpan. Selesaikan pembayaran lewat menu Pesanan.',
+              ),
+              backgroundColor: Colors.blue,
+            ),
+          );
         }
 
         // Redirect ke halaman Order History (tab 2)
@@ -1448,14 +1462,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 setModalState(() {
                                   isMapLoading = true;
                                 });
-                                LocationPermission permission = await Geolocator.checkPermission();
+                                LocationPermission permission =
+                                    await Geolocator.checkPermission();
                                 if (permission == LocationPermission.denied) {
-                                  permission = await Geolocator.requestPermission();
+                                  permission =
+                                      await Geolocator.requestPermission();
                                 }
-                                if (permission == LocationPermission.whileInUse ||
+                                if (permission ==
+                                        LocationPermission.whileInUse ||
                                     permission == LocationPermission.always) {
-                                  final pos = await Geolocator.getCurrentPosition();
-                                  final latLng = LatLng(pos.latitude, pos.longitude);
+                                  final pos =
+                                      await Geolocator.getCurrentPosition();
+                                  final latLng = LatLng(
+                                    pos.latitude,
+                                    pos.longitude,
+                                  );
                                   setModalState(() {
                                     tempLat = pos.latitude;
                                     tempLng = pos.longitude;
@@ -1470,10 +1491,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 });
                               }
                             },
-                            icon: const Icon(Icons.my_location, size: 14, color: Colors.blue),
+                            icon: const Icon(
+                              Icons.my_location,
+                              size: 14,
+                              color: Colors.blue,
+                            ),
                             label: const Text(
                               'Lokasi Saya',
-                              style: TextStyle(fontSize: 11, color: Colors.blue, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
@@ -1503,7 +1532,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       tempLat = latLng.latitude;
                                       tempLng = latLng.longitude;
                                     });
-                                    addressMapController.move(latLng, addressMapController.camera.zoom);
+                                    addressMapController.move(
+                                      latLng,
+                                      addressMapController.camera.zoom,
+                                    );
                                   },
                                   onPositionChanged: (position, hasGesture) {
                                     if (hasGesture && position.center != null) {
@@ -1516,8 +1548,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 ),
                                 children: [
                                   TileLayer(
-                                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                    userAgentPackageName: 'com.example.bengkelin_app',
+                                    urlTemplate:
+                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    userAgentPackageName:
+                                        'com.example.bengkelin_app',
                                   ),
                                 ],
                               ),
@@ -1537,7 +1571,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 Container(
                                   color: Colors.black12,
                                   child: const Center(
-                                    child: CircularProgressIndicator(color: Colors.blue),
+                                    child: CircularProgressIndicator(
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
                             ],
@@ -1604,15 +1640,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   });
 
                                   ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(content: Text('Alamat berhasil diperbarui!'), backgroundColor: Colors.blue),
-);
+                                    SnackBar(
+                                      content: Text(
+                                        'Alamat berhasil diperbarui!',
+                                      ),
+                                      backgroundColor: Colors.blue,
+                                    ),
+                                  );
                                 }
                               } catch (e) {
                                 if (ctx.mounted) {
                                   Navigator.pop(ctx); // Pop progress dialog
                                   ScaffoldMessenger.of(ctx).showSnackBar(
-  SnackBar(content: Text('Gagal menyimpan alamat: $e'), backgroundColor: Colors.red),
-);
+                                    SnackBar(
+                                      content: Text(
+                                        'Gagal menyimpan alamat: $e',
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
                                 }
                               }
                             }

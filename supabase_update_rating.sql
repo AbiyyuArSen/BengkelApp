@@ -18,6 +18,7 @@ RETURNS TABLE (
     description TEXT,
     operating_hours VARCHAR,
     phone VARCHAR,
+    profile_photo_url VARCHAR,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
     distance_km DOUBLE PRECISION,
@@ -37,6 +38,7 @@ AS $$
         b.description,
         b.operating_hours,
         b.phone,
+        b.profile_photo_url,
         b.latitude,
         b.longitude,
         (6371 * acos(

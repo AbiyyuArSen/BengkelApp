@@ -36,20 +36,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
           'My Garage / Vehicle List',
           style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: AppColors.primary),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddVehicleScreen()),
-              ).then((_) {
-                if (!context.mounted) return;
-                context.read<CustomerProfileViewModel>().fetchVehicles();
-              });
-            },
-          )
-        ],
+
       ),
       body: Consumer<CustomerProfileViewModel>(
         builder: (context, profileViewModel, child) {

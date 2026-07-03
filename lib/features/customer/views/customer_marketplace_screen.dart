@@ -369,16 +369,27 @@ class _CustomerMarketplaceScreenState extends State<CustomerMarketplaceScreen> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            // Brand Name
-                                            Text(
-                                              item.sku.split('-').first.toUpperCase(),
-                                              style: TextStyle(
-                                                color: Colors.blue.shade700,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w600,
+                                            // Bengkel Name
+                                            if (item.bengkelName != null && item.bengkelName!.isNotEmpty) ...[
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.storefront, size: 12, color: Colors.grey.shade600),
+                                                  const SizedBox(width: 4),
+                                                  Expanded(
+                                                    child: Text(
+                                                      item.bengkelName!,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: Colors.grey.shade600,
+                                                        fontSize: 10,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                            const SizedBox(height: 2),
+                                              const SizedBox(height: 4),
+                                            ],
 
                                             // Product Name
                                             Text(

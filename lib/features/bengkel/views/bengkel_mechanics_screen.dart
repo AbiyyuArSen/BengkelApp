@@ -4,6 +4,8 @@ import '../../../core/constants/app_colors.dart';
 import '../viewmodels/bengkel_dashboard_viewmodel.dart';
 import '../viewmodels/bengkel_mechanic_viewmodel.dart';
 import '../models/mechanic_model.dart';
+import '../../auth/viewmodels/auth_viewmodel.dart';
+import '../../auth/views/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'add_mechanic_bottom_sheet.dart';
 import 'edit_mechanic_bottom_sheet.dart';
@@ -38,7 +40,7 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
       builder: (context, mechanicVM, child) {
         return Scaffold(
           backgroundColor: AppColors.background,
-          appBar: _buildAppBar(context, bengkelName, isVerified),
+          appBar: _buildAppBar(context, bengkelName, isVerified, dashboardVM.profilePhotoUrl),
           body: mechanicVM.isLoading && mechanicVM.mechanics.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : RefreshIndicator(
@@ -124,7 +126,7 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context, String bengkelName, bool isVerified) {
+  PreferredSizeWidget _buildAppBar(BuildContext context, String bengkelName, bool isVerified, String? photoUrl) {
     final nameInitial = bengkelName.isNotEmpty ? bengkelName[0].toUpperCase() : 'B';
     return AppBar(
       toolbarHeight: 72,
@@ -136,24 +138,32 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
         child: Container(
           width: 40,
           height: 40,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
               colors: [Color(0xFFF2B300), Color(0xFFFF8C00)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             shape: BoxShape.circle,
+            image: photoUrl != null && photoUrl.isNotEmpty
+                ? DecorationImage(
+                    image: NetworkImage(photoUrl),
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
-          child: Center(
-            child: Text(
-              nameInitial,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ),
+          child: (photoUrl == null || photoUrl.isEmpty)
+              ? Center(
+                  child: Text(
+                    nameInitial,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                )
+              : null,
         ),
       ),
       title: Padding(
@@ -205,8 +215,15 @@ class _BengkelMechanicsScreenState extends State<BengkelMechanicsScreen> {
               ),
               child: const Icon(Icons.logout_rounded, color: Colors.white70, size: 18),
             ),
-            onPressed: () {
-              // Placeholder logout logic, similar to dashboard
+            onPressed: () async {
+              await context.read<AuthViewModel>().signOut();
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
             },
           ),
         ),

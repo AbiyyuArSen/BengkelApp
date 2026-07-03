@@ -50,6 +50,7 @@ dependencies:
   printing: ^5.14.3
   shared_preferences: ^2.5.5
   responsive_framework: ^1.5.1
+  webview_windows: ^0.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

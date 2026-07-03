@@ -29,8 +29,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       backgroundColor: AppColors.background,
       body: stats.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
+          : RefreshIndicator(
+              onRefresh: () async {
+                await context.read<AdminConfigViewModel>().fetchDashboardStats();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
@@ -68,63 +73,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           ],
                         ),
 
-                        const SizedBox(height: 24),
 
-                        // Order Status Distribution Chart
-                        _buildSectionCard(
-                          title: 'Order Status Distribution',
-                          child: Row(
-                            children: [
-                              // Simulated Donut Chart
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.green,
-                                    width: 16,
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.pie_chart,
-                                    color: Colors.blue,
-                                    size: 28,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 24),
-                              // Chart legends
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    _buildLegendItem(
-                                      'Completed',
-                                      '${stats.completedOrders}',
-                                      Colors.green,
-                                    ),
-                                    _buildLegendItem(
-                                      'In Progress',
-                                      '${stats.inProgressOrders}',
-                                      Colors.blue,
-                                    ),
-                                    _buildLegendItem(
-                                      'Pending',
-                                      '${stats.pendingOrders}',
-                                      Colors.orange,
-                                    ),
-                                    _buildLegendItem(
-                                      'Cancelled',
-                                      '${stats.cancelledOrders}',
-                                      Colors.red,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
 
                         const SizedBox(height: 24),
 
@@ -191,8 +140,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 ],
               ),
             ),
+          ),
     );
   }
+
+
 
   Widget _buildStatCard({
     required IconData icon,
