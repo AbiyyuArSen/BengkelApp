@@ -827,7 +827,17 @@ class _CustomerDashboardScreenState extends State<CustomerDashboardScreen> {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CustomerMainScreen(
+                                            initialIndex: 1, initialExploreTab: 1),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
                               child: const Text(
                                 'Lihat Semua',
                                 style: TextStyle(

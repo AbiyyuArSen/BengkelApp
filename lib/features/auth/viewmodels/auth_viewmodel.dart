@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 
@@ -24,7 +26,6 @@ class AuthViewModel extends ChangeNotifier {
     _obscurePassword = !_obscurePassword;
     notifyListeners();
   }
-
 
   Future<void> login(String identifier, String password) async {
     _setLoading(true);
@@ -65,7 +66,7 @@ class AuthViewModel extends ChangeNotifier {
           throw Exception('Password mekanik salah.');
         }
         _mechanicData = mechanicResult;
-        
+
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('mechanic_id', mechanicResult['id']);
 
@@ -86,7 +87,7 @@ class AuthViewModel extends ChangeNotifier {
       if (!trimmedIdentifier.contains('@')) {
         try {
           Map<String, dynamic>? userData;
-          
+
           userData = await _supabase
               .from('users')
               .select()
@@ -111,22 +112,24 @@ class AuthViewModel extends ChangeNotifier {
           if (userLookupError is Exception) {
             rethrow; // Rethrow our custom Exception
           }
-          throw Exception('Gagal mencari akun (Mungkin terblokir RLS). Harap gunakan Email.');
+          throw Exception(
+            'Gagal mencari akun (Mungkin terblokir RLS). Harap gunakan Email.',
+          );
         }
       } else {
-         // Jika sudah format email, opsional cari di users, atau biarkan resolvedEmail = trimmedIdentifier
-         try {
-            final userData = await _supabase
-                .from('users')
-                .select()
-                .eq('email', trimmedIdentifier)
-                .maybeSingle();
-            if (userData != null && userData['email'] != null) {
-               resolvedEmail = userData['email'] as String;
-            }
-         } catch(e) {
-            // Abaikan jika pakai email tapi gagal lookup (RLS), karena signInWithPassword tetap bisa jalan
-         }
+        // Jika sudah format email, opsional cari di users, atau biarkan resolvedEmail = trimmedIdentifier
+        try {
+          final userData = await _supabase
+              .from('users')
+              .select()
+              .eq('email', trimmedIdentifier)
+              .maybeSingle();
+          if (userData != null && userData['email'] != null) {
+            resolvedEmail = userData['email'] as String;
+          }
+        } catch (e) {
+          // Abaikan jika pakai email tapi gagal lookup (RLS), karena signInWithPassword tetap bisa jalan
+        }
       }
 
       // 3. Login via Supabase Auth
@@ -161,8 +164,11 @@ class AuthViewModel extends ChangeNotifier {
         }
       } catch (error) {
         _setLoading(false);
-        if (error is AuthException && error.message.contains('Invalid login credentials')) {
-           throw Exception('Password salah (Mencoba login ke email: $resolvedEmail)');
+        if (error is AuthException &&
+            error.message.contains('Invalid login credentials')) {
+          throw Exception(
+            'Password salah (Mencoba login ke email: $resolvedEmail)',
+          );
         }
         rethrow;
       }
@@ -176,11 +182,40 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> loginWithGoogle() async {
     _setLoading(true);
     try {
-      await _supabase.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: 'bengkelinapp://login-callback',
+      /// TODO: Masukkan Web Client ID dari Google Cloud Console Anda di sini.
+      /// Client ID ini biasanya sama dengan yang Anda masukkan di Dashboard Supabase.
+      const webClientId =
+          '12883776945-im519mmiqtf8qcsdd2u524d559g5cegh.apps.googleusercontent.com';
+
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: webClientId,
       );
-    } catch (error) {
+
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        _setLoading(false);
+        return; // User membatalkan login
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null) {
+        throw 'No Access Token found.';
+      }
+      if (idToken == null) {
+        throw 'No ID Token found.';
+      }
+
+      await _supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
+    } catch (error, stackTrace) {
+      debugPrint('Google Sign In Error: $error');
+      debugPrint('Google Sign In StackTrace: $stackTrace');
       _setLoading(false);
       rethrow;
     }
@@ -189,7 +224,7 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<void> checkSession() async {
     _setLoading(true);
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final mechanicId = prefs.getString('mechanic_id');
@@ -199,7 +234,7 @@ class AuthViewModel extends ChangeNotifier {
             .select()
             .eq('id', mechanicId)
             .maybeSingle();
-            
+
         if (mechanicResult != null) {
           _mechanicData = mechanicResult;
           _currentUser = UserModel(
@@ -312,11 +347,7 @@ class AuthViewModel extends ChangeNotifier {
       await _supabase.auth.signUp(
         email: email,
         password: password,
-        data: {
-          'full_name': name,
-          'phone': phone,
-          'role': UserRole.admin.name,
-        },
+        data: {'full_name': name, 'phone': phone, 'role': UserRole.admin.name},
       );
     } catch (error) {
       _setLoading(false);
@@ -373,10 +404,10 @@ class AuthViewModel extends ChangeNotifier {
     try {
       final user = _supabase.auth.currentUser;
       if (user != null) {
-        await _supabase.from('users').update({
-          'full_name': name,
-          'phone': phone,
-        }).eq('id', user.id);
+        await _supabase
+            .from('users')
+            .update({'full_name': name, 'phone': phone})
+            .eq('id', user.id);
 
         if (_currentUser != null) {
           _currentUser = UserModel(
@@ -397,16 +428,23 @@ class AuthViewModel extends ChangeNotifier {
     _setLoading(false);
   }
 
-  Future<void> updateAddress(String address, {double? latitude, double? longitude}) async {
+  Future<void> updateAddress(
+    String address, {
+    double? latitude,
+    double? longitude,
+  }) async {
     _setLoading(true);
     try {
       final user = _supabase.auth.currentUser;
       if (user != null) {
-        await _supabase.from('users').update({
-          'address': address,
-          'latitude': latitude,
-          'longitude': longitude,
-        }).eq('id', user.id);
+        await _supabase
+            .from('users')
+            .update({
+              'address': address,
+              'latitude': latitude,
+              'longitude': longitude,
+            })
+            .eq('id', user.id);
 
         if (_currentUser != null) {
           _currentUser = UserModel(

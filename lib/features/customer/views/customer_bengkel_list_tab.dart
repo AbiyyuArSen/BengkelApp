@@ -47,9 +47,9 @@ class _CustomerBengkelListTabState extends State<CustomerBengkelListTab> {
     if (activeVehicle != null) {
       filteredBengkels = dashboardViewModel.bengkels.where((b) {
         final specs = b['specialization'] as List<dynamic>? ?? [];
-        if (activeVehicle.type == 'mobil') {
+        if (activeVehicle.type.toLowerCase() == 'mobil') {
           return specs.any((s) => s.toString().toLowerCase().contains('mobil'));
-        } else if (activeVehicle.type == 'motor') {
+        } else if (activeVehicle.type.toLowerCase() == 'motor') {
           return specs.any((s) => s.toString().toLowerCase().contains('motor'));
         }
         return true;

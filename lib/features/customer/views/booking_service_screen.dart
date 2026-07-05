@@ -29,6 +29,16 @@ class _BookingServiceScreenState extends State<BookingServiceScreen> {
   @override
   void initState() {
     super.initState();
+    final profileVm = context.read<CustomerProfileViewModel>();
+    final activeVehicle = profileVm.activeVehicle;
+    if (activeVehicle != null) {
+      if (activeVehicle.type.toLowerCase() == 'mobil') {
+        _selectedVehicleType = 'Mobil';
+      } else if (activeVehicle.type.toLowerCase() == 'motor') {
+        _selectedVehicleType = 'Motor';
+      }
+    }
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final vm = context.read<CustomerDashboardViewModel>();
       if (vm.bengkels.isEmpty) {
@@ -385,109 +395,119 @@ class _BookingServiceScreenState extends State<BookingServiceScreen> {
           final activeVehicle = profileVM.activeVehicle;
 
           // Pre-fill vehicle type from active vehicle
-          return CustomScrollView(
-            slivers: [
-              // App Bar
-              SliverAppBar(
-                expandedHeight: 180,
-                pinned: true,
-                backgroundColor: const Color(0xFF1E2843),
-                elevation: 0,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.tune_rounded, color: Colors.white),
-                    onPressed: _showFilterBottomSheet,
-                    tooltip: 'Filter',
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF1E2843),
+              // Compute available vehicle filter options based on active vehicle
+              List<String> validOptions = List.from(_vehicleTypeOptions);
+              if (activeVehicle != null) {
+                if (activeVehicle.type.toLowerCase() == 'mobil') {
+                  validOptions.remove('Motor');
+                } else if (activeVehicle.type.toLowerCase() == 'motor') {
+                  validOptions.remove('Mobil');
+                }
+              }
+
+              return CustomScrollView(
+                slivers: [
+                  // App Bar
+                  SliverAppBar(
+                    expandedHeight: 180,
+                    pinned: true,
+                    backgroundColor: const Color(0xFF1E2843),
+                    elevation: 0,
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                    child: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 56, 20, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Booking Service',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: -0.5,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${filtered.length} bengkel tersedia',
-                              style: const TextStyle(
-                                color: Color(0xFF8C96A8),
-                                fontSize: 13,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            // Search bar
-                            Container(
-                              height: 48,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.search, color: AppColors.textSecondary, size: 20),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: TextField(
-                                      controller: _searchController,
-                                      decoration: const InputDecoration(
-                                        hintText: 'Cari nama bengkel atau layanan...',
-                                        hintStyle: TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontSize: 13,
-                                        ),
-                                        border: InputBorder.none,
-                                        isDense: true,
-                                      ),
-                                    ),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.tune_rounded, color: Colors.white),
+                        onPressed: _showFilterBottomSheet,
+                        tooltip: 'Filter',
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF1E2843),
+                        ),
+                        child: SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 56, 20, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Booking Service',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: -0.5,
                                   ),
-                                  if (_searchQuery.isNotEmpty)
-                                    GestureDetector(
-                                      onTap: () => _searchController.clear(),
-                                      child: const Icon(Icons.close, color: AppColors.textSecondary, size: 18),
-                                    ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${filtered.length} bengkel tersedia',
+                                  style: const TextStyle(
+                                    color: Color(0xFF8C96A8),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                // Search bar
+                                Container(
+                                  height: 48,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.search, color: AppColors.textSecondary, size: 20),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: _searchController,
+                                          decoration: const InputDecoration(
+                                            hintText: 'Cari nama bengkel atau layanan...',
+                                            hintStyle: TextStyle(
+                                              color: AppColors.textSecondary,
+                                              fontSize: 13,
+                                            ),
+                                            border: InputBorder.none,
+                                            isDense: true,
+                                          ),
+                                        ),
+                                      ),
+                                      if (_searchQuery.isNotEmpty)
+                                        GestureDetector(
+                                          onTap: () => _searchController.clear(),
+                                          child: const Icon(Icons.close, color: AppColors.textSecondary, size: 18),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
 
-              // Vehicle type filter chips (sticky)
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: _VehicleFilterHeaderDelegate(
-                  activeVehicle: activeVehicle?.type,
-                  selected: _selectedVehicleType,
-                  options: _vehicleTypeOptions,
-                  onSelected: (val) => setState(() => _selectedVehicleType = val),
-                  activeFiltersCount: (_minRating > 0 ? 1 : 0) + (_maxDistance < 50.0 ? 1 : 0),
-                  onFilterTap: _showFilterBottomSheet,
-                ),
-              ),
+                  // Vehicle type filter chips (sticky)
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _VehicleFilterHeaderDelegate(
+                      activeVehicle: activeVehicle?.type,
+                      selected: _selectedVehicleType,
+                      options: validOptions,
+                      onSelected: (val) => setState(() => _selectedVehicleType = val),
+                      activeFiltersCount: (_minRating > 0 ? 1 : 0) + (_maxDistance < 50.0 ? 1 : 0),
+                      onFilterTap: _showFilterBottomSheet,
+                    ),
+                  ),
 
               // Content
               if (dashVM.isLoading)

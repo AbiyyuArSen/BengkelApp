@@ -1,4 +1,4 @@
-package com.example.bengkelin_app
+package com.example.bengkelku
 
 import io.flutter.embedding.android.FlutterActivity
 

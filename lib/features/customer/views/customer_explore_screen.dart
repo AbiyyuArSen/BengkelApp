@@ -8,7 +8,8 @@ import 'customer_marketplace_screen.dart';
 import 'cart_screen.dart';
 
 class CustomerExploreScreen extends StatelessWidget {
-  const CustomerExploreScreen({super.key});
+  final int initialTab;
+  const CustomerExploreScreen({super.key, this.initialTab = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class CustomerExploreScreen extends StatelessWidget {
 
     return DefaultTabController(
       length: 2,
+      initialIndex: initialTab,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(

@@ -12,7 +12,8 @@ import '../viewmodels/customer_profile_viewmodel.dart';
 import 'package:google_fonts/google_fonts.dart';
 class CustomerMainScreen extends StatefulWidget {
   final int initialIndex;
-  const CustomerMainScreen({super.key, this.initialIndex = 0});
+  final int initialExploreTab;
+  const CustomerMainScreen({super.key, this.initialIndex = 0, this.initialExploreTab = 0});
 
   @override
   State<CustomerMainScreen> createState() => _CustomerMainScreenState();
@@ -20,18 +21,18 @@ class CustomerMainScreen extends StatefulWidget {
 
 class _CustomerMainScreenState extends State<CustomerMainScreen> {
   late int _currentIndex;
-
-  final List<Widget> _pages = [
-    const CustomerDashboardScreen(),
-    const CustomerExploreScreen(),
-    const CustomerActivityScreen(),
-    const CustomerProfileScreen(),
-  ];
+  late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
+    _pages = [
+      const CustomerDashboardScreen(),
+      CustomerExploreScreen(initialTab: widget.initialExploreTab),
+      const CustomerActivityScreen(),
+      const CustomerProfileScreen(),
+    ];
   }
 
   @override

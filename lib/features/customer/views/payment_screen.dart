@@ -358,8 +358,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
         discount: 0.0,
         shippingFee: calculatedShipping,
         paymentMethod: finalPaymentMethod,
-        recipientName: _isPickup ? '-' : (_recipientName ?? user?.name),
-        recipientPhone: _isPickup ? '-' : (_recipientPhone ?? user?.phone),
+        recipientName: _recipientName ?? user?.name ?? 'Customer',
+        recipientPhone: _recipientPhone ?? user?.phone ?? '-',
         shippingAddress: _isPickup
             ? 'Ambil di Bengkel'
             : (_shippingAddress ?? user?.address),

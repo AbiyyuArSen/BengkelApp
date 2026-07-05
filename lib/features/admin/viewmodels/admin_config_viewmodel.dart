@@ -518,13 +518,38 @@ class AdminConfigViewModel extends ChangeNotifier {
   Future<void> fetchUsers() async {
     _setLoading(true);
     try {
-      // 1. Ambil data dari tabel users (Customer, Bengkel, Admin)
       final usersResponse = await _supabase
           .from('users')
           .select()
           .order('created_at', ascending: false);
       final List<dynamic> usersData = usersResponse;
-      List<UserModel> allUsers = usersData.map((e) => UserModel.fromJson(e)).toList();
+
+      // Ambil data bengkel untuk mapping nama bengkel ke owner_id
+      final bengkelsResponse = await _supabase
+          .from('bengkels')
+          .select('owner_id, name');
+      final List<dynamic> bengkelsData = bengkelsResponse;
+      Map<String, String> bengkelNames = {};
+      for (var b in bengkelsData) {
+        if (b['owner_id'] != null) {
+          bengkelNames[b['owner_id'].toString()] = b['name']?.toString() ?? 'Bengkel';
+        }
+      }
+
+      List<UserModel> allUsers = usersData.map((e) {
+        final u = UserModel.fromJson(e);
+        return UserModel(
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          phone: u.phone,
+          address: u.address,
+          role: u.role,
+          latitude: u.latitude,
+          longitude: u.longitude,
+          bengkelName: bengkelNames[u.id],
+        );
+      }).toList();
 
       // 2. Ambil data dari tabel mechanics (Mekanik)
       final mechanicsResponse = await _supabase

@@ -14,6 +14,7 @@ class UserModel {
   final UserRole role;
   final double? latitude;
   final double? longitude;
+  final String? bengkelName;
 
   UserModel({
     required this.id,
@@ -24,6 +25,7 @@ class UserModel {
     required this.role,
     this.latitude,
     this.longitude,
+    this.bengkelName,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
